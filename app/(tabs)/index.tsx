@@ -40,6 +40,7 @@ export default function Index() {
   const [filteredContents, setFilteredContents] = useState(contents);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const allTags = Array.from(
     new Set(contents.flatMap((item) => item.tags ?? []))
@@ -79,16 +80,27 @@ export default function Index() {
       result = result.filter((item) => item.isFavorite);
     }
 
+    if (searchQuery.trim()) {
+      result = result.filter((item) =>
+        item.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
     setFilteredContents(result);
-  }, [selectedSource, selectedTags, showFavorites]);
+  }, [selectedSource, selectedTags, showFavorites, searchQuery]);
 
   return (
     <View className="bg-white flex-1 p-4">
-      <TextInput
-        onChangeText={() => console.log("Input changed")}
-        value="text"
-        className="border p-2 rounded-md bg-gray-50 border-slate-100 mb-4"
-      />
+      <View className="flex-row items-center border rounded-md bg-gray-50 border-slate-100 px-2 mb-4">
+        <Ionicons name="search" size={20} color="#94a3b8" className="mr-2" />
+        <TextInput
+          placeholder="Search..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          className="flex-1 py-2"
+        />
+      </View>
+
       <ContentsFilters
         onSourcePress={() => setSourceModalVisible(true)}
         onClearFilter={clearFilters}

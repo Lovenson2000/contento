@@ -85,10 +85,7 @@ export default function Index() {
       />
       <ContentsFilters
         onSourcePress={() => setSourceModalVisible(true)}
-        onClearFilter={() => {
-          setFilteredContents(contents);
-          setSelectedSource(null);
-        }}
+        onClearFilter={clearFilters}
         onTagsPress={() => setShowTags((prev) => !prev)}
         selectedSource={selectedSource}
       />

@@ -39,6 +39,7 @@ export default function Index() {
   const [selectedSource, setSelectedSource] = useState<string | null>(null);
   const [filteredContents, setFilteredContents] = useState(contents);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [showFavorites, setShowFavorites] = useState(false);
 
   const allTags = Array.from(
     new Set(contents.flatMap((item) => item.tags ?? []))
@@ -58,6 +59,7 @@ export default function Index() {
   const clearFilters = () => {
     setSelectedSource(null);
     setSelectedTags([]);
+    setShowFavorites(false);
   };
 
   useEffect(() => {
@@ -69,12 +71,16 @@ export default function Index() {
 
     if (selectedTags.length > 0) {
       result = result.filter((item) =>
-        selectedTags.every((tag) => item.tags?.includes(tag))
+        item.tags?.some((tag) => selectedTags.includes(tag))
       );
     }
 
+    if (showFavorites) {
+      result = result.filter((item) => item.isFavorite);
+    }
+
     setFilteredContents(result);
-  }, [selectedSource, selectedTags]);
+  }, [selectedSource, selectedTags, showFavorites]);
 
   return (
     <View className="bg-white flex-1 p-4">
@@ -88,6 +94,9 @@ export default function Index() {
         onClearFilter={clearFilters}
         onTagsPress={() => setShowTags((prev) => !prev)}
         selectedSource={selectedSource}
+        selectedTags={selectedTags}
+        showFavorites={showFavorites}
+        onFavoritePress={() => setShowFavorites((prev) => !prev)}
       />
       {showTags && (
         <TagsFilter
@@ -198,11 +207,17 @@ function ContentsFilters({
   onClearFilter,
   onTagsPress,
   selectedSource,
+  selectedTags,
+  showFavorites,
+  onFavoritePress,
 }: {
   onSourcePress: () => void;
   onClearFilter: () => void;
   onTagsPress: () => void;
   selectedSource: string | null;
+  selectedTags: string[];
+  showFavorites: boolean;
+  onFavoritePress: () => void;
 }) {
   const iconSource =
     selectedSource && socialMediaIcons[selectedSource]
@@ -212,14 +227,20 @@ function ContentsFilters({
   return (
     <View className="flex-row items-center justify-between mb-4">
       <Pressable
-        className="py-2 px-4 rounded-full active:bg-slate-100 border border-slate-100"
+        className={`py-2 px-4 rounded-full ${
+          !selectedSource && selectedTags.length === 0
+            ? "bg-slate-100"
+            : "border border-slate-100"
+        }`}
         onPress={onClearFilter}
       >
         <Text>All</Text>
       </Pressable>
 
       <Pressable
-        className="p-2 rounded-full active:bg-slate-100 border border-slate-100"
+        className={`p-2 rounded-full ${
+          selectedSource ? "bg-slate-100" : "border border-slate-100"
+        }`}
         onPress={onSourcePress}
       >
         <View className="flex-row items-center justify-center gap-1.5">
@@ -238,7 +259,9 @@ function ContentsFilters({
       </Pressable>
 
       <Pressable
-        className="p-2 rounded-full active:bg-slate-100 border border-slate-100"
+        className={`p-2 rounded-full ${
+          selectedTags.length > 0 ? "bg-slate-100" : "border border-slate-100"
+        }`}
         onPress={onTagsPress}
       >
         <View className="flex-row items-center justify-center gap-1.5">
@@ -248,8 +271,9 @@ function ContentsFilters({
       </Pressable>
 
       <Pressable
-        className="p-2 rounded-full active:bg-slate-100 border-slate-100"
-        // onPress={onFavoritePress}
+        className={`p-2 rounded-full 
+          ${showFavorites ? "bg-slate-100" : "border border-slate-100"}`}
+        onPress={onFavoritePress}
       >
         <View className="flex-row items-center justify-center gap-1.5">
           <FontAwesome name="star-o" size={20} color="black" />

@@ -16,6 +16,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Entypo from "@expo/vector-icons/Entypo";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import { contents } from "@/lib/constants/contents";
 import { Content } from "@/lib/types";
 import { formatRemindTime } from "@/lib/utils/time";
@@ -91,8 +92,14 @@ export default function Index() {
 
   return (
     <View className="bg-white flex-1 p-4">
-      <View className="flex-row items-center border rounded-md bg-gray-50 border-slate-100 px-2 mb-4">
-        <Ionicons name="search" size={20} color="##303768" className="mr-2" />
+      <View className="flex-row items-center justify-between mb-8">
+        <Text className="text-3xl text-slate-950 font-medium">My Contents</Text>
+        <Pressable>
+          <AntDesign name="plus" size={24} color="#051542" />
+        </Pressable>
+      </View>
+      <View className="flex-row items-center border rounded-lg bg-gray-50 border-slate-100 px-2 py-0.5 mb-4">
+        <Ionicons name="search" size={20} color="#64748b" className="mr-2" />
         <TextInput
           placeholder="Search"
           value={searchQuery}
@@ -250,7 +257,7 @@ function ContentsFilters({
       </Pressable>
 
       <Pressable
-        className={`p-2 rounded-full ${
+        className={`py-2 px-3 rounded-full ${
           selectedSource ? "bg-slate-100" : "border border-slate-100"
         }`}
         onPress={onSourcePress}
@@ -258,7 +265,7 @@ function ContentsFilters({
         <View className="flex-row items-center justify-center gap-1.5">
           {iconSource ? (
             <>
-              <Image source={iconSource} style={{ width: 20, height: 20 }} />
+              <Image source={iconSource} style={{ width: 16, height: 16 }} />
               <Text>{selectedSource}</Text>
             </>
           ) : (
@@ -271,24 +278,24 @@ function ContentsFilters({
       </Pressable>
 
       <Pressable
-        className={`p-2 rounded-full ${
+        className={`py-2 px-3 rounded-full ${
           selectedTags.length > 0 ? "bg-slate-100" : "border border-slate-100"
         }`}
         onPress={onTagsPress}
       >
         <View className="flex-row items-center justify-center gap-1.5">
-          <FontAwesome name="tags" size={20} color="black" />
+          <FontAwesome name="tags" size={16} color="#041031" />
           <Text>Tags</Text>
         </View>
       </Pressable>
 
       <Pressable
-        className={`p-2 rounded-full 
+        className={`py-2 px-3 rounded-full 
           ${showFavorites ? "bg-slate-100" : "border border-slate-100"}`}
         onPress={onFavoritePress}
       >
         <View className="flex-row items-center justify-center gap-1.5">
-          <FontAwesome name="star-o" size={20} color="black" />
+          <FontAwesome name="star-o" size={16} color="#041031" />
           <Text>Favorites</Text>
         </View>
       </Pressable>

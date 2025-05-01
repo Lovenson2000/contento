@@ -92,12 +92,12 @@ export default function Index() {
   return (
     <View className="bg-white flex-1 p-4">
       <View className="flex-row items-center border rounded-md bg-gray-50 border-slate-100 px-2 mb-4">
-        <Ionicons name="search" size={20} color="#94a3b8" className="mr-2" />
+        <Ionicons name="search" size={20} color="##303768" className="mr-2" />
         <TextInput
-          placeholder="Search..."
+          placeholder="Search"
           value={searchQuery}
           onChangeText={setSearchQuery}
-          className="flex-1 py-2"
+          className="flex-1 py-2 placeholder:text-slate-500"
         />
       </View>
 

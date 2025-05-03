@@ -21,6 +21,7 @@ import { contents } from "@/lib/constants/contents";
 import { Content } from "@/lib/types";
 import { formatRemindTime } from "@/lib/utils/time";
 import { useEffect, useState } from "react";
+import { useRouter } from "expo-router";
 
 const socialMediaIcons: Record<string, ImageSourcePropType> = {
   YouTube: require("@/assets/images/youtube.png"),
@@ -181,9 +182,13 @@ export default function Index() {
 
 function SingleContentItem({ content }: { content: Content }) {
   const iconSource = socialMediaIcons[content.source];
+  const router = useRouter();
 
   return (
-    <TouchableOpacity className="flex-row items-center border border-slate-100 p-4 rounded-md mb-6 w-full">
+    <TouchableOpacity
+      className="flex-row items-center border border-slate-100 p-4 rounded-md mb-6 w-full"
+      onPress={() => router.push(`/content-details/${content.id}`)}
+    >
       <Pressable
         className="absolute right-4 top-4"
         onPress={() => alert("Menu clicked")}

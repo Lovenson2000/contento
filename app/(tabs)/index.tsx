@@ -82,8 +82,13 @@ export default function Index() {
     }
 
     if (searchQuery.trim()) {
-      result = result.filter((item) =>
-        item.title.toLowerCase().includes(searchQuery.toLowerCase())
+      result = result.filter(
+        (item) =>
+          item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.tags?.some((tag) =>
+            tag.toLowerCase().includes(searchQuery.toLowerCase())
+          )
       );
     }
 

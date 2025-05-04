@@ -1,12 +1,12 @@
 import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import YoutubePlayer from "react-native-youtube-iframe";
 import { extractYoutubeIdFromUrl, getContentById } from "@/lib/utils/content";
 import { Content } from "@/lib/types";
 import { formatRemindTime } from "@/lib/utils/time";
 import Ionicons from "@expo/vector-icons/Ionicons";
-
+import { fetchYoutubeVideoDetails } from "@/lib/api/youtube";
 export default function ContentDetailPage() {
   const params = useLocalSearchParams();
   const id = params?.id as string;
@@ -36,8 +36,13 @@ export default function ContentDetailPage() {
     </View>
   );
 }
-function YoutubeContentScreen({ content }: { content: Content }) {
+
+export function YoutubeContentScreen({ content }: { content: Content }) {
   const [playing, setPlaying] = useState(false);
+  const [videoData, setVideoData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  const videoId = extractYoutubeIdFromUrl(content.url);
 
   const onStateChange = useCallback((state: string) => {
     if (state === "ended") {
@@ -45,19 +50,61 @@ function YoutubeContentScreen({ content }: { content: Content }) {
     }
   }, []);
 
-  return (
-    <View>
-      <View>
-        <YoutubePlayer
-          height={400}
-          play={playing}
-          videoId={extractYoutubeIdFromUrl(content.url)}
-          onChangeState={onStateChange}
-        />
+  useEffect(() => {
+    async function loadVideoData() {
+      try {
+        const data = await fetchYoutubeVideoDetails(videoId);
+        setVideoData(data);
+      } catch (error) {
+        console.error("Failed to fetch video details:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (videoId) loadVideoData();
+  }, [videoId]);
+
+  if (loading) {
+    return (
+      <View className="p-4">
+        <ActivityIndicator size="large" />
       </View>
-      <View className="absolute right-4 bottom-4">
+    );
+  }
+
+  if (!videoData) {
+    return (
+      <View className="p-4">
+        <Text className="text-red-500">Failed to load video data.</Text>
+      </View>
+    );
+  }
+
+  return (
+    <View className="py-4 px-2">
+      <YoutubePlayer
+        height={300}
+        play={playing}
+        videoId={videoId}
+        onChangeState={onStateChange}
+        webViewStyle={{
+          borderRadius: 10,
+          backgroundColor: "black",
+        }}
+      />
+      <View className="mt-4 space-y-2">
+        <Text className="text-xl font-semibold">
+          {videoData.snippet?.title ?? "Untitled"}
+        </Text>
+        <Text className="text-sm text-gray-500">
+          Views: {videoData.statistics?.viewCount ?? "N/A"}
+        </Text>
+      </View>
+
+      <View className="mt-4">
         {content.remindAt ? (
-          <View className="flex-row items-center text-xs flex-1 gap-2 border rounded-md border-slate-100 px-2 py-1 text-gray-400">
+          <View className="flex-row items-center gap-2 border rounded-md border-slate-100 px-2 py-1">
             <Ionicons name="notifications-outline" size={16} color="#334155" />
             <Text className="text-sm text-slate-700">
               {formatRemindTime(new Date(content.remindAt))}

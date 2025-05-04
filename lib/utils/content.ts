@@ -1,3 +1,6 @@
+import { contents } from "../constants/contents";
+import { Content } from "../types";
+
 const youtubeBaseUrl = "https://youtu.be/";
 const tiktokBaseUrl = "https://vt.tiktok.com/";
 const twitterBaseUrl = "https://x.com/";
@@ -19,4 +22,18 @@ export function getContentSource(source: string): string {
   if (source.startsWith(facebookBaseUrl)) return "facebook";
   if (source.startsWith(mediumBaseUrl)) return "medium";
   return "unknown";
+}
+
+export function getContents(): Content[] {
+  return contents;
+}
+
+export function getContentById(id: string): Content | undefined {
+  return contents.find((content) => content.id === id);
+}
+
+export function extractYoutubeIdFromUrl(url: string): string {
+  const regex = /(?:v=|\/)([0-9A-Za-z_-]{11})/;
+  const match = regex.exec(url);
+  return match ? match[1] : "dQw4w9WgXcQ";
 }

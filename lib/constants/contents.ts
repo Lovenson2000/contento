@@ -4,7 +4,7 @@ export const contents: Content[] = [
   {
     id: "1",
     source: "YouTube",
-    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    url: "https://youtu.be/LHz6VNorI3U?si=KeamG6X_yTNTol5l",
     title: "Never Gonna Give You Up",
     tags: ["music", "pop"],
     userId: "user1",
@@ -113,7 +113,7 @@ export const contents: Content[] = [
   {
     id: "11",
     source: "YouTube",
-    url: "https://www.youtube.com/watch?v=abcde12345",
+    url: "https://youtu.be/BCCjGtKtBjE?si=qtJ4ZcGgZ8e192rI",
     title: "Mastering TypeScript in 10 Minutes",
     tags: ["typescript", "programming", "tutorial"],
     userId: "user10",

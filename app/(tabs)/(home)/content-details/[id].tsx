@@ -84,34 +84,34 @@ export function YoutubeContentScreen({ content }: { content: Content }) {
   return (
     <View className="py-4 px-2">
       <YoutubePlayer
-        height={300}
+        height={200}
         play={playing}
         videoId={videoId}
         onChangeState={onStateChange}
         webViewStyle={{
           borderRadius: 10,
-          backgroundColor: "black",
+          backgroundColor: "red",
         }}
       />
       <View className="mt-4 space-y-2">
         <Text className="text-xl font-semibold">
           {videoData.snippet?.title ?? "Untitled"}
         </Text>
-        <Text className="text-sm text-gray-500">
-          Views: {videoData.statistics?.viewCount ?? "N/A"}
-        </Text>
       </View>
 
       <View className="mt-4">
         {content.remindAt ? (
-          <View className="flex-row items-center gap-2 border rounded-md border-slate-100 px-2 py-1">
+          <View className="flex-row max-w-40 items-center gap-2 border rounded-md border-slate-100 px-2 py-1">
             <Ionicons name="notifications-outline" size={16} color="#334155" />
             <Text className="text-sm text-slate-700">
               {formatRemindTime(new Date(content.remindAt))}
             </Text>
           </View>
         ) : (
-          <Pressable onPress={() => alert("Add Reminder clicked")}>
+          <Pressable
+            onPress={() => alert("Add Reminder clicked")}
+            className="max-w-40"
+          >
             <Text className="text-sm text-slate-900 bg-gray-100 px-2 py-1 rounded-lg">
               Add Reminder
             </Text>

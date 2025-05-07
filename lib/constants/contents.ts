@@ -13,7 +13,7 @@ export const contents: Content[] = [
   {
     id: "2",
     source: "Tiktok",
-    url: "https://www.tiktok.com/@example/video/1234567890",
+    url: "https://www.tiktok.com/@imca7757/video/7478940959363861815?is_from_webapp=1&sender_device=pc",
     title: "Funny TikTok Video",
     tags: ["funny", "viral"],
     userId: "user2",
@@ -31,7 +31,7 @@ export const contents: Content[] = [
   {
     id: "8",
     source: "Reddit",
-    url: "https://www.reddit.com/example/post/1234567890",
+    url: "https://www.reddit.com/r/SideProject/s/rbnxjeLmqF",
     title: "Why Most Startups failed...",
     tags: ["startup", "tech"],
     userId: "user7",

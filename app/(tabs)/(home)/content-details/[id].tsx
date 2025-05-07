@@ -7,6 +7,7 @@ import { Content } from "@/lib/types";
 import { formatRemindTime } from "@/lib/utils/time";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { fetchYoutubeVideoDetails } from "@/lib/api/youtube";
+
 export default function ContentDetailPage() {
   const params = useLocalSearchParams();
   const id = params?.id as string;
@@ -90,7 +91,6 @@ export function YoutubeContentScreen({ content }: { content: Content }) {
         onChangeState={onStateChange}
         webViewStyle={{
           borderRadius: 10,
-          backgroundColor: "red",
         }}
       />
       <View className="mt-4 space-y-2">

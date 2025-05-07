@@ -20,6 +20,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(home)"
         options={{
+          headerShown: false,
           title: "Home",
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
@@ -33,6 +34,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="saved-content"
         options={{
+          headerShown: false,
           title: "Saved Contents",
           tabBarIcon: ({ color, focused }) => (
             <MaterialCommunityIcons

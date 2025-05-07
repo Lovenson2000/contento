@@ -16,7 +16,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Entypo from "@expo/vector-icons/Entypo";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import { contents } from "@/lib/constants/contents";
 import { Content } from "@/lib/types";
 import { formatRemindTime } from "@/lib/utils/time";
@@ -98,12 +97,6 @@ export default function Index() {
 
   return (
     <View className="bg-white flex-1 p-4">
-      <View className="flex-row items-center justify-between mb-8">
-        <Text className="text-3xl text-slate-950 font-medium">My Contents</Text>
-        <Pressable>
-          <AntDesign name="plus" size={24} color="#051542" />
-        </Pressable>
-      </View>
       <View className="flex-row items-center border rounded-lg bg-gray-50 border-slate-100 px-2 py-0.5 mb-4">
         <Ionicons name="search" size={20} color="#64748b" className="mr-2" />
         <TextInput
@@ -187,7 +180,7 @@ function SingleContentItem({ content }: { content: Content }) {
   return (
     <TouchableOpacity
       className="flex-row items-center border border-slate-100 p-4 rounded-md mb-6 w-full"
-      onPress={() => router.push(`/content-details/${content.id}`)}
+      onPress={() => router.push(`/${content.id}`)}
     >
       <Pressable
         className="absolute right-4 top-4"

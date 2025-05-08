@@ -1,10 +1,16 @@
 import { fetchYoutubeVideoDetails } from "@/lib/api/youtube";
 import { extractYoutubeIdFromUrl } from "@/lib/utils/content";
-import { ActivityIndicator, Text, Pressable, View } from "react-native";
+import {
+  ActivityIndicator,
+  Text,
+  Pressable,
+  View,
+  StyleSheet,
+} from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import YoutubePlayer from "react-native-youtube-iframe";
 import { Content } from "@/lib/types";
-import { formatRemindTime } from "@/lib/utils/time";
+import { formatRemindTime, formatYoutubeVideoDuration } from "@/lib/utils/time";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function YoutubeScreen({ content }: { content: Content }) {
@@ -68,24 +74,42 @@ export default function YoutubeScreen({ content }: { content: Content }) {
         </Text>
       </View>
 
-      <View className="mt-4">
-        {content.remindAt ? (
-          <View className="flex-row max-w-40 items-center gap-2 border rounded-md border-slate-100 px-2 py-1">
-            <Ionicons name="notifications-outline" size={16} color="#334155" />
-            <Text className="text-sm text-slate-700">
-              {formatRemindTime(new Date(content.remindAt))}
-            </Text>
-          </View>
-        ) : (
-          <Pressable
-            onPress={() => alert("Add Reminder clicked")}
-            className="max-w-40"
-          >
-            <Text className="text-sm text-slate-900 bg-gray-100 px-2 py-1 rounded-lg">
-              Add Reminder
-            </Text>
+      <View className="mt-4 flex-row items-center justify-between">
+        <View className="bg-red-400 w-40">
+          {content.remindAt ? (
+            <View className="flex-row items-center gap-2 border rounded-md border-slate-100 px-2 py-1">
+              <Ionicons
+                name="notifications-outline"
+                size={16}
+                color="#334155"
+              />
+              <Text className="text-sm text-slate-700">
+                {formatRemindTime(new Date(content.remindAt))}
+              </Text>
+            </View>
+          ) : (
+            <Pressable
+              onPress={() => alert("Add Reminder clicked")}
+              className="max-w-40"
+            >
+              <Text className="text-sm text-red-600 px-2 py-1 rounded-lg">
+                Add Reminder
+              </Text>
+            </Pressable>
+          )}
+        </View>
+
+        <View className="flex-row">
+          <Pressable onPress={() => alert("Delete clicked")}>
+            <Ionicons name="trash-outline" size={24} color="#051542" />
           </Pressable>
-        )}
+          <Pressable onPress={() => alert("Favorite clicked")}>
+            <Ionicons name="heart-outline" size={24} color="#051542" />
+          </Pressable>
+          <Pressable onPress={() => alert("Share clicked")}>
+            <Ionicons name="share-outline" size={24} color="#051542" />
+          </Pressable>
+        </View>
       </View>
     </View>
   );

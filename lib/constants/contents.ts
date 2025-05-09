@@ -22,9 +22,9 @@ export const contents: Content[] = [
   {
     id: "3",
     source: "Instagram",
-    url: "https://www.instagram.com/p/ExamplePost/",
-    title: "Beautiful Sunset",
-    tags: ["travel", "nature"],
+    url: "https://www.instagram.com/p/DJWWAXsRFui/?igsh=MTB2cTB5M3JvZjhvdQ==",
+    title: "Football Highlights",
+    tags: ["football", "passion"],
     userId: "user3",
     createdAt: new Date("2023-10-03"),
   },

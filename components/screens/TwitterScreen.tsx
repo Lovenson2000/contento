@@ -1,10 +1,11 @@
 import { Content } from "@/lib/types";
-import { SafeAreaView, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, View } from "react-native";
 import { Tweet } from "rn-tweet-embed";
+import ContentActions from "../ContentActions";
 
 export default function TwitterScreen({ content }: { content: Content }) {
   return (
-    <SafeAreaView>
+    <SafeAreaView className="bg-red-700">
       <View className="p-4">
         <Tweet
           theme="light"
@@ -16,6 +17,8 @@ export default function TwitterScreen({ content }: { content: Content }) {
             style: {
               borderRadius: 10,
               overflow: "hidden",
+              maxHeight: 700,
+              backgroundColor: "white",
             },
             scrollEnabled: true,
             allowsAirPlayForMediaPlayback: true,

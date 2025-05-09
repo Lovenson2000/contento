@@ -37,3 +37,9 @@ export function extractYoutubeIdFromUrl(url: string): string {
   const match = regex.exec(url);
   return match ? match[1] : "dQw4w9WgXcQ";
 }
+
+export function extractInstagramIdFromUrl(url: string): string {
+  const regex = /(?:\/p\/|\/tv\/|\/reel\/)([0-9A-Za-z_-]+)/;
+  const match = regex.exec(url);
+  return match ? match[1] : "dQw4w9WgXcQ";
+}

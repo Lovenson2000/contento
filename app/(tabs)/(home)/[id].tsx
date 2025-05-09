@@ -1,10 +1,11 @@
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
-import { getContentById } from "@/lib/utils/content";
+import { StyleSheet, Text, View } from "react-native";
+import { extractInstagramIdFromUrl, getContentById } from "@/lib/utils/content";
 import { Content } from "@/lib/types";
 import TwitterScreen from "@/components/screens/TwitterScreen";
 import YoutubeScreen from "@/components/screens/YoutubeScreen";
+import { Instagram } from "react-native-socials";
 
 export default function ContentDetailPage() {
   const params = useLocalSearchParams();
@@ -28,7 +29,7 @@ export default function ContentDetailPage() {
   }
 
   return (
-    <View className="p-4">
+    <View style={styles.contentScreenContainer}>
       {content.source.toLocaleLowerCase() === "youtube" && (
         <YoutubeScreen content={content} />
       )}
@@ -39,3 +40,11 @@ export default function ContentDetailPage() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  contentScreenContainer: {
+    backgroundColor: "white",
+    flex: 1,
+    padding: 16,
+  },
+});

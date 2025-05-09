@@ -1,13 +1,13 @@
 import { Content } from "@/lib/types";
 import { formatRemindTime } from "@/lib/utils/time";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 export default function ContentActions({ content }: { content: Content }) {
   return (
     <View>
-      <View style={styles.bottomContainer}>
-        <View className="bg-red-400 w-40">
+      <View className="flex-row items-center justify-between">
+        <View className="px-2">
           {content.remindAt ? (
             <View className="flex-row items-center gap-2 border rounded-md border-slate-100 px-2 py-1">
               <Ionicons
@@ -15,7 +15,7 @@ export default function ContentActions({ content }: { content: Content }) {
                 size={16}
                 color="#334155"
               />
-              <Text style={styles.remindTime}>
+              <Text className="text-slate-800">
                 {formatRemindTime(new Date(content.remindAt))}
               </Text>
             </View>
@@ -24,12 +24,12 @@ export default function ContentActions({ content }: { content: Content }) {
               onPress={() => alert("Add Reminder clicked")}
               className="max-w-40"
             >
-              <Text style={styles.reminderButton}>Add Reminder</Text>
+              <Text className="text-slate-700 font-semibold">Add Reminder</Text>
             </Pressable>
           )}
         </View>
 
-        <View style={styles.iconsContainer}>
+        <View className="flex-row items-center justify-center gap-8 p-4">
           <Pressable onPress={() => alert("Delete clicked")}>
             <Ionicons name="trash-outline" size={20} color="#051542" />
           </Pressable>
@@ -44,27 +44,3 @@ export default function ContentActions({ content }: { content: Content }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  bottomContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  iconsContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 32,
-    paddingBlock: 3,
-  },
-  reminderButton: {
-    paddingInline: 4,
-    paddingBlock: 3,
-    backgroundColor: "",
-  },
-  remindTime: {
-    color: "#334155",
-    fontSize: 16,
-  },
-});

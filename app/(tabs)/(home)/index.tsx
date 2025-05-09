@@ -83,6 +83,12 @@ export default function Index() {
 
   return (
     <View className="bg-white flex-1 p-4">
+      <View className="flex-row items-center justify-between mt-2 mb-6">
+        <Text className="text-4xl font-semibold text-slate-800">My Saves</Text>
+        <Pressable>
+          <Entypo name="plus" size={40} color="#051542" />
+        </Pressable>
+      </View>
       <View className="flex-row items-center border rounded-lg bg-gray-50 border-slate-100 px-2 py-0.5 mb-4">
         <Ionicons name="search" size={20} color="#64748b" className="mr-2" />
         <TextInput

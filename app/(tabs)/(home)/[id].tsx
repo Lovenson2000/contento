@@ -1,11 +1,10 @@
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { extractInstagramIdFromUrl, getContentById } from "@/lib/utils/content";
+import { getContentById } from "@/lib/utils/content";
 import { Content } from "@/lib/types";
 import TwitterScreen from "@/components/screens/TwitterScreen";
 import YoutubeScreen from "@/components/screens/YoutubeScreen";
-import { Instagram } from "react-native-socials";
 
 export default function ContentDetailPage() {
   const params = useLocalSearchParams();

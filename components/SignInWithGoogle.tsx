@@ -66,36 +66,14 @@ export default function SignInWithGoogle() {
   };
 
   return (
-    <Pressable style={styles.customGoogleButton} onPress={handleGoogleSignIn}>
-      <Image source={GoogleIcon} style={styles.icon} />
-      <Text style={styles.googleButtonText}>Continue with Google</Text>
+    <Pressable
+      className="flex-row items-center border border-slate-200 justify-center bg-white py-3 px-5 rounded-lg shadow-md gap-2"
+      onPress={handleGoogleSignIn}
+    >
+      <Image source={GoogleIcon} className="w-[30px] h-[30px]" />
+      <Text className="text-[#051542] text-base ml-2">
+        Continue with Google
+      </Text>
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  customGoogleButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#ffffff",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 1, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    gap: 4,
-  },
-  googleButtonText: {
-    color: "#051542",
-    fontSize: 16,
-    marginLeft: 10,
-  },
-  icon: {
-    width: 30,
-    height: 30,
-  },
-});

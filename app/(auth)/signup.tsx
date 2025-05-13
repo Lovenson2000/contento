@@ -2,17 +2,16 @@ import { useState } from "react";
 import {
   View,
   Text,
-  TextInput,
-  Pressable,
   Alert,
-  StyleSheet,
   TouchableOpacity,
+  SafeAreaView,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { supabase } from "@/lib/supabase";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import SignInWithGoogle from "@/components/SignInWithGoogle";
+import LogoSection from "@/components/LogoSection";
 
 export default function SignupScreen() {
   const [email, setEmail] = useState("");
@@ -37,89 +36,39 @@ export default function SignupScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <Input
-        label="Email"
-        onChangeText={setEmail}
-        value={email}
-        placeholder="email@address.com"
-      />
+    <SafeAreaView className="flex-1 bg-white items-center justify-center">
+      <LogoSection />
+      <View className="px-8 w-full">
+        <Input
+          label="Email"
+          onChangeText={setEmail}
+          value={email}
+          placeholder="email@address.com"
+        />
 
-      <Input
-        label="Password"
-        onChangeText={setPassword}
-        value={password}
-        placeholder="Password"
-        secureTextEntry
-      />
-      <Button title="Sign Up" onPress={signUpWithEmail} disabled={loading} />
+        <Input
+          label="Password"
+          onChangeText={setPassword}
+          value={password}
+          placeholder="Password"
+          secureTextEntry
+        />
+        <Button title="Sign Up" onPress={signUpWithEmail} disabled={loading} />
 
-      <View style={styles.dividerContainer}>
-        <View style={styles.divider} />
-        <Text style={styles.orText}>Or</Text>
-        <View style={styles.divider} />
+        <View className="flex-row items-center my-5">
+          <View className="flex-1 h-px bg-gray-200" />
+          <Text className="mx-2 text-sm text-gray-500">Or</Text>
+          <View className="flex-1 h-px bg-gray-200" />
+        </View>
+
+        <SignInWithGoogle />
+        <View className="flex-row justify-center mt-8">
+          <Text className="text-gray-500">Already have an account?</Text>
+          <TouchableOpacity onPress={() => router.push("/login")}>
+            <Text className="text-blue-500 font-medium"> Sign In</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <SignInWithGoogle />
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>Already have an account?</Text>
-        <TouchableOpacity onPress={() => router.push("/signup")}>
-          <Text style={styles.signUpText}> Sign In</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 60,
-    paddingHorizontal: 32,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    marginBottom: 30,
-    textAlign: "center",
-  },
-  input: {
-    marginBottom: 16,
-  },
-  forgotPassword: {
-    alignSelf: "flex-end",
-    marginBottom: 20,
-  },
-  forgotPasswordText: {
-    color: "#3B82F6",
-    fontSize: 14,
-  },
-  loginButton: {
-    marginBottom: 20,
-  },
-  dividerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 20,
-  },
-  divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "#E5E7EB",
-  },
-  orText: {
-    marginHorizontal: 8,
-    color: "#6B7280",
-    fontSize: 14,
-  },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 30,
-  },
-  footerText: {
-    color: "#6B7280",
-  },
-  signUpText: {
-    color: "#3B82F6",
-    fontWeight: "500",
-  },
-});

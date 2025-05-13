@@ -32,7 +32,7 @@ export default function Input({
         </Text>
       )}
       <TextInput
-        className={`border border-gray-300 rounded-lg px-4 py-3 text-base text-gray-900 bg-white ${inputClassName}`}
+        className={`border border-slate-200 rounded-lg px-4 py-3 text-base text-gray-900 bg-white ${inputClassName}`}
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}

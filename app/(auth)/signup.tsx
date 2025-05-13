@@ -1,44 +1,24 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
+  View,
+  Text,
+  TextInput,
+  Pressable,
   Alert,
   StyleSheet,
-  View,
-  AppState,
   TouchableOpacity,
-  Text,
 } from "react-native";
-import { supabase } from "../lib/supabase";
-import Button from "../components/Button";
-import Input from "./Input";
-import SignInWithGoogle from "./SignInWithGoogle";
+import { useRouter } from "expo-router";
+import { supabase } from "@/lib/supabase";
+import Button from "@/components/Button";
+import Input from "@/components/Input";
+import SignInWithGoogle from "@/components/SignInWithGoogle";
 
-// Tells Supabase Auth to continuously refresh the session automatically if
-// the app is in the foreground. When this is added, you will continue to receive
-// `onAuthStateChange` events with the `TOKEN_REFRESHED` or `SIGNED_OUT` event
-// if the user's session is terminated. This should only be registered once.
-AppState.addEventListener("change", (state) => {
-  if (state === "active") {
-    supabase.auth.startAutoRefresh();
-  } else {
-    supabase.auth.stopAutoRefresh();
-  }
-});
-
-export default function Auth() {
+export default function SignupScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
-  async function signInWithEmail() {
-    setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
-
-    if (error) Alert.alert(error.message);
-    setLoading(false);
-  }
+  const router = useRouter();
 
   async function signUpWithEmail() {
     setLoading(true);
@@ -72,29 +52,24 @@ export default function Auth() {
         placeholder="Password"
         secureTextEntry
       />
-
-      <TouchableOpacity style={styles.forgotPassword}>
-        <Text style={styles.forgotPasswordText}>Forgot password?</Text>
-      </TouchableOpacity>
-
-      <Button title="Log In" disabled={loading} onPress={signInWithEmail} />
+      <Button title="Log In" onPress={signUpWithEmail} disabled={loading} />
 
       <View style={styles.dividerContainer}>
         <View style={styles.divider} />
         <Text style={styles.orText}>Or</Text>
         <View style={styles.divider} />
       </View>
-
       <SignInWithGoogle />
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Don't have an account?</Text>
-        <TouchableOpacity>
-          <Text style={styles.signUpText}> Sign Up</Text>
+        <Text style={styles.footerText}>Already have an account?</Text>
+        <TouchableOpacity onPress={() => router.push("/signup")}>
+          <Text style={styles.signUpText}> Sign In</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     marginTop: 60,

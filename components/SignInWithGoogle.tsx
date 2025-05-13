@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
 import {
   GoogleSignin,
-  GoogleSigninButton,
   statusCodes,
   SignInResponse,
 } from "@react-native-google-signin/google-signin";
 import { supabase } from "@/lib/supabase";
+import { Pressable, StyleSheet, Text, Image } from "react-native";
+import { useRouter } from "expo-router";
+const GoogleIcon = require("@/assets/images/google.png");
 
 export default function SignInWithGoogle() {
   useEffect(() => {
@@ -20,6 +22,8 @@ export default function SignInWithGoogle() {
         "261684861816-eio2n0qt1fss14ub16atphhure5eiq8i.apps.googleusercontent.com",
     });
   }, []);
+
+  const router = useRouter();
 
   const handleGoogleSignIn = async () => {
     try {
@@ -36,6 +40,9 @@ export default function SignInWithGoogle() {
           console.log("Supabase Sign-In:", error, data);
           if (error) {
             alert("Error signing in with Supabase: " + error.message);
+          } else {
+            // ✅ navigate to the home screen after successful sign-in
+            router.replace("/(tabs)");
           }
         } else {
           throw new Error("No ID token present!");
@@ -61,10 +68,36 @@ export default function SignInWithGoogle() {
   };
 
   return (
-    <GoogleSigninButton
-      size={GoogleSigninButton.Size.Wide}
-      color={GoogleSigninButton.Color.Light}
-      onPress={handleGoogleSignIn}
-    />
+    <Pressable style={styles.customGoogleButton} onPress={handleGoogleSignIn}>
+      <Image source={GoogleIcon} style={styles.icon} />
+      <Text style={styles.googleButtonText}>Continue with Google</Text>
+    </Pressable>
   );
 }
+
+const styles = StyleSheet.create({
+  customGoogleButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#ffffff",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 1, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    gap: 4,
+  },
+  googleButtonText: {
+    color: "#051542",
+    fontSize: 16,
+    marginLeft: 10,
+  },
+  icon: {
+    width: 30,
+    height: 30,
+  },
+});

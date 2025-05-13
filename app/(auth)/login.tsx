@@ -1,33 +1,17 @@
+import Button from "@/components/Button";
+import Input from "@/components/Input";
+import SignInWithGoogle from "@/components/SignInWithGoogle";
+import { supabase } from "@/lib/supabase";
+import { router, usePathname, useRouter } from "expo-router";
+
 import React, { useState } from "react";
-import {
-  Alert,
-  StyleSheet,
-  View,
-  AppState,
-  TouchableOpacity,
-  Text,
-} from "react-native";
-import { supabase } from "../lib/supabase";
-import Button from "../components/Button";
-import Input from "./Input";
-import SignInWithGoogle from "./SignInWithGoogle";
-
-// Tells Supabase Auth to continuously refresh the session automatically if
-// the app is in the foreground. When this is added, you will continue to receive
-// `onAuthStateChange` events with the `TOKEN_REFRESHED` or `SIGNED_OUT` event
-// if the user's session is terminated. This should only be registered once.
-AppState.addEventListener("change", (state) => {
-  if (state === "active") {
-    supabase.auth.startAutoRefresh();
-  } else {
-    supabase.auth.stopAutoRefresh();
-  }
-});
-
-export default function Auth() {
+import { Alert, StyleSheet, View, TouchableOpacity, Text } from "react-native";
+export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
   async function signInWithEmail() {
     setLoading(true);
@@ -37,22 +21,6 @@ export default function Auth() {
     });
 
     if (error) Alert.alert(error.message);
-    setLoading(false);
-  }
-
-  async function signUpWithEmail() {
-    setLoading(true);
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
-
-    if (error) Alert.alert(error.message);
-    if (!session)
-      Alert.alert("Please check your inbox for email verification!");
     setLoading(false);
   }
 
@@ -77,7 +45,7 @@ export default function Auth() {
         <Text style={styles.forgotPasswordText}>Forgot password?</Text>
       </TouchableOpacity>
 
-      <Button title="Log In" disabled={loading} onPress={signInWithEmail} />
+      <Button title="Log In" onPress={signInWithEmail} disabled={loading} />
 
       <View style={styles.dividerContainer}>
         <View style={styles.divider} />
@@ -88,13 +56,14 @@ export default function Auth() {
       <SignInWithGoogle />
       <View style={styles.footer}>
         <Text style={styles.footerText}>Don't have an account?</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push("/signup")}>
           <Text style={styles.signUpText}> Sign Up</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     marginTop: 60,

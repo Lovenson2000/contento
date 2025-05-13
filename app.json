@@ -10,7 +10,10 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.lovenson.contento"
+      "bundleIdentifier": "com.lovenson.contento",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -44,7 +47,6 @@
         }
       ]
     ],
-
     "experiments": {
       "typedRoutes": true
     },

@@ -10,7 +10,12 @@ import { supabase } from "@/lib/supabase";
 export default function SignInWithGoogle() {
   useEffect(() => {
     GoogleSignin.configure({
-      scopes: ["https://www.googleapis.com/auth/drive.readonly"],
+      scopes: ["https://www.googleapis.com/auth/drive"],
+      iosClientId:
+        "261684861816-7solo5na1ar1u3547qe2ieu49477omgm.apps.googleusercontent.com",
+      offlineAccess: true,
+      forceCodeForRefreshToken: true,
+      profileImageSize: 120,
       webClientId:
         "261684861816-eio2n0qt1fss14ub16atphhure5eiq8i.apps.googleusercontent.com",
     });
@@ -22,8 +27,6 @@ export default function SignInWithGoogle() {
       const userInfo = await GoogleSignin.signIn();
 
       if (isSignInResponse(userInfo)) {
-        console.log(userInfo);
-
         if (userInfo?.data?.idToken) {
           const { data, error } = await supabase.auth.signInWithIdToken({
             provider: "google",

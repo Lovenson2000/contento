@@ -2,7 +2,7 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import SignInWithGoogle from "@/components/SignInWithGoogle";
 import { supabase } from "@/lib/supabase";
-import { router, usePathname, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
 import React, { useState } from "react";
 import { Alert, StyleSheet, View, TouchableOpacity, Text } from "react-native";
@@ -11,7 +11,6 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const pathname = usePathname();
 
   async function signInWithEmail() {
     setLoading(true);

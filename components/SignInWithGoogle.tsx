@@ -37,11 +37,9 @@ export default function SignInWithGoogle() {
             token: userInfo.data.idToken,
           });
 
-          console.log("Supabase Sign-In:", error, data);
           if (error) {
             alert("Error signing in with Supabase: " + error.message);
           } else {
-            // ✅ navigate to the home screen after successful sign-in
             router.replace("/(tabs)");
           }
         } else {

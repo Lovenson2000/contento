@@ -52,7 +52,7 @@ export default function SignupScreen() {
         placeholder="Password"
         secureTextEntry
       />
-      <Button title="Log In" onPress={signUpWithEmail} disabled={loading} />
+      <Button title="Sign Up" onPress={signUpWithEmail} disabled={loading} />
 
       <View style={styles.dividerContainer}>
         <View style={styles.divider} />

@@ -7,12 +7,16 @@ import {
   KeyboardEvent,
   Animated,
   TextInput,
+  Platform,
 } from "react-native";
 
 import { useEffect, useRef, useState } from "react";
 
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { createContent } from "@/lib/api/content";
+import { useAuth } from "@/context/AuthContext";
+import { getContentSource } from "@/lib/utils/content";
 
 type AddNewContentModalProps = {
   isVisible: boolean;
@@ -22,18 +26,16 @@ export default function AddNewContentModal({
   isVisible,
   onClose,
 }: AddNewContentModalProps) {
-  const [contentUrl, setContentUrl] = useState("");
+  const [url, setUrl] = useState("");
   const [tags, setTags] = useState("");
-  const [showDateTimePicker, setShowDateTimePicker] = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
   const [reminderDate, setReminderDate] = useState<Date | null>(null);
-  const modalHeight = useRef(new Animated.Value(0.5)).current;
+  const [title, setTitle] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const modalHeight = useRef(new Animated.Value(0.7)).current;
 
-  const onChangeDate = (event: any, selectedDate?: Date) => {
-    setShowDateTimePicker(false);
-    if (selectedDate) {
-      setReminderDate(selectedDate);
-    }
-  };
+  const authContext = useAuth();
+  const user = authContext?.user;
 
   useEffect(() => {
     const keyboardShow = Keyboard.addListener(
@@ -61,10 +63,42 @@ export default function AddNewContentModal({
 
   const _keyboardDidHide = () => {
     Animated.timing(modalHeight, {
-      toValue: 0.5,
+      toValue: 0.7,
       duration: 250,
       useNativeDriver: false,
     }).start();
+  };
+
+  const handleSaveContent = async () => {
+    if (!url.trim()) return;
+
+    setIsSaving(true);
+    try {
+      const tagsArray = tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag !== "");
+
+      const source = getContentSource(url.trim());
+
+      await createContent({
+        url: url.trim(),
+        tags: tagsArray,
+        remindAt: reminderDate ?? undefined,
+        title: title.trim(),
+        userId: user?.id,
+        source: source,
+      });
+
+      setUrl("");
+      setTags("");
+      setReminderDate(null);
+      onClose();
+    } catch (err) {
+      console.error("Failed to save content:", err);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -98,9 +132,22 @@ export default function AddNewContentModal({
                   URL
                 </Text>
                 <TextInput
-                  onChangeText={setContentUrl}
-                  value={contentUrl}
+                  onChangeText={setUrl}
+                  value={url}
                   placeholder="e.g https://www.contento.dev/"
+                  placeholderTextColor="#535c73"
+                  className="border border-slate-200 bg-white rounded-lg p-4 text-slate-900"
+                />
+              </View>
+
+              <View className="mt-4">
+                <Text className="text-[#051542] text-xl font-medium mb-1">
+                  Title (optional)
+                </Text>
+                <TextInput
+                  onChangeText={setTitle}
+                  value={title}
+                  placeholder="e.g How I learned English"
                   placeholderTextColor="#535c73"
                   className="border border-slate-200 bg-white rounded-lg p-4 text-slate-900"
                 />
@@ -120,26 +167,22 @@ export default function AddNewContentModal({
               </View>
 
               {/* Reminder */}
-              <View className="mt-4">
-                <Pressable
-                  onPress={() => setShowDateTimePicker(true)}
-                  className="py-2"
-                >
+              <View className="mt-6">
+                <Pressable onPress={() => setShowPicker(true)}>
                   <Text className="text-[#364aca] font-medium">
                     {reminderDate
                       ? `Reminder: ${reminderDate.toLocaleString()}`
                       : "Add Reminder"}
                   </Text>
                 </Pressable>
-                {showDateTimePicker && (
-                  <DateTimePicker
-                    value={reminderDate || new Date()}
-                    mode="datetime"
-                    display="default"
-                    onChange={onChangeDate}
-                  />
-                )}
+                <CrossPlatformDateTimePicker
+                  value={reminderDate || new Date()}
+                  visible={showPicker}
+                  onChange={(date) => setReminderDate(date)}
+                  onDismiss={() => setShowPicker(false)}
+                />
               </View>
+
               <View className="flex-row gap-x-4 mt-6">
                 <Pressable
                   onPress={onClose}
@@ -147,14 +190,107 @@ export default function AddNewContentModal({
                 >
                   <Text className="text-gray-700 font-medium">Cancel</Text>
                 </Pressable>
-                <Pressable className="flex-1 px-4 py-3 bg-[#364aca] rounded-lg items-center">
-                  <Text className="text-white font-medium">Save Content</Text>
+                <Pressable
+                  className="flex-1 px-4 py-3 bg-[#364aca] rounded-lg items-center"
+                  onPress={handleSaveContent}
+                >
+                  <Text className="text-white font-medium">
+                    {isSaving ? "Saving..." : "Save Content"}
+                  </Text>
                 </Pressable>
               </View>
             </View>
           </Animated.View>
         </View>
       </Modal>
+    </View>
+  );
+}
+
+type Props = {
+  value: Date;
+  visible: boolean;
+  onChange: (date: Date) => void;
+  onDismiss?: () => void;
+};
+
+export function CrossPlatformDateTimePicker({
+  value,
+  visible,
+  onChange,
+  onDismiss,
+}: Props) {
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [tempDate, setTempDate] = useState<Date | null>(null);
+
+  if (!visible) return null;
+
+  if (Platform.OS === "ios") {
+    return (
+      <DateTimePicker
+        value={value}
+        mode="datetime"
+        display="spinner"
+        onChange={(event, selectedDate) => {
+          if (selectedDate) {
+            onChange(selectedDate);
+          }
+          onDismiss?.();
+        }}
+      />
+    );
+  }
+
+  // Android: First date, then time
+  return (
+    <View>
+      {!showTimePicker && (
+        <DateTimePicker
+          value={value}
+          mode="date"
+          display="default"
+          onChange={(event, selectedDate) => {
+            if (event.type === "dismissed") {
+              onDismiss?.();
+              return;
+            }
+
+            if (selectedDate) {
+              const updated = new Date(selectedDate);
+              const original = value;
+              updated.setHours(original.getHours());
+              updated.setMinutes(original.getMinutes());
+              setTempDate(updated);
+              setShowTimePicker(true);
+            }
+          }}
+        />
+      )}
+
+      {showTimePicker && (
+        <DateTimePicker
+          value={value}
+          mode="time"
+          display="default"
+          onChange={(event, selectedTime) => {
+            setShowTimePicker(false);
+
+            if (event.type === "dismissed") {
+              onDismiss?.();
+              return;
+            }
+
+            if (selectedTime && tempDate) {
+              const updated = new Date(tempDate);
+              updated.setHours(selectedTime.getHours());
+              updated.setMinutes(selectedTime.getMinutes());
+              onChange(updated);
+            }
+
+            onDismiss?.();
+          }}
+        />
+      )}
     </View>
   );
 }

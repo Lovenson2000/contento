@@ -2,16 +2,7 @@ export type Content = {
   id: string;
   url: string;
   title: string;
-  source:
-    | "YouTube"
-    | "Tiktok"
-    | "Twitter"
-    | "Instagram"
-    | "Quora"
-    | "Reddit"
-    | "LinkedIn"
-    | "Facebook"
-    | "Medium";
+  source?: string;
   tags: string[];
   userId: string;
   createdAt: Date;

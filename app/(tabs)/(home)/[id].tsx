@@ -29,11 +29,11 @@ export default function ContentDetailPage() {
 
   return (
     <View style={styles.contentScreenContainer}>
-      {content.source.toLocaleLowerCase() === "youtube" && (
+      {content?.source?.toLocaleLowerCase() === "youtube" && (
         <YoutubeScreen content={content} />
       )}
 
-      {content.source.toLocaleLowerCase() === "twitter" && (
+      {content?.source?.toLocaleLowerCase() === "twitter" && (
         <TwitterScreen content={content} />
       )}
     </View>

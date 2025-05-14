@@ -1,17 +1,9 @@
 import { fetchYoutubeVideoDetails } from "@/lib/api/youtube";
 import { extractYoutubeIdFromUrl } from "@/lib/utils/content";
-import {
-  ActivityIndicator,
-  Text,
-  Pressable,
-  View,
-  StyleSheet,
-} from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import YoutubePlayer from "react-native-youtube-iframe";
 import { Content } from "@/lib/types";
-import { formatRemindTime } from "@/lib/utils/time";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import ContentActions from "../ContentActions";
 
 export default function YoutubeScreen({ content }: { content: Content }) {

@@ -23,16 +23,20 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import AddNewContentModal from "@/components/AddContentModal";
 import EmptySavesScreen from "@/components/screens/EmptySavesScreen";
+import { Content } from "@/lib/types";
+import { fetchUserContents } from "@/lib/api/content";
 
 export default function Index() {
   const [sourceModalVisible, setSourceModalVisible] = useState(false);
   const [showTags, setShowTags] = useState(false);
   const [selectedSource, setSelectedSource] = useState<string | null>(null);
-  const [filteredContents, setFilteredContents] = useState(contents);
+  const [allContents, setAllContents] = useState<Content[]>([]);
+  const [filteredContents, setFilteredContents] = useState<Content[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isAddContentModalVisible, setAddContentModalVisible] = useState(false);
+  const [isAddContentModalVisible, setIsAddContentModalVisible] =
+    useState(false);
 
   const signout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -46,7 +50,7 @@ export default function Index() {
   const user = useAuth()?.user;
 
   const allTags = Array.from(
-    new Set(contents.flatMap((item) => item.tags ?? []))
+    new Set(allContents.flatMap((item) => item.tags ?? []))
   );
 
   const handleSourceSelect = (source: string) => {
@@ -55,7 +59,7 @@ export default function Index() {
   };
 
   const handleAddContentModalClose = () => {
-    setAddContentModalVisible(false);
+    setIsAddContentModalVisible(false);
   };
 
   const toggleTag = (tag: string) => {
@@ -71,7 +75,20 @@ export default function Index() {
   };
 
   useEffect(() => {
-    let result = contents;
+    const loadUserContents = async () => {
+      if (!user?.id) return;
+      try {
+        const contents = await fetchUserContents(user.id);
+        setAllContents(contents);
+      } catch (err) {
+        console.error("Failed to load contents:", err);
+      }
+    };
+    loadUserContents();
+  }, [user]);
+
+  useEffect(() => {
+    let result = allContents;
 
     if (selectedSource) {
       result = result.filter((item) => item.source === selectedSource);
@@ -99,7 +116,7 @@ export default function Index() {
     }
 
     setFilteredContents(result);
-  }, [selectedSource, selectedTags, showFavorites, searchQuery]);
+  }, [selectedSource, selectedTags, showFavorites, searchQuery, allContents]);
 
   return (
     <View className="bg-white flex-1 p-4">
@@ -110,7 +127,7 @@ export default function Index() {
             <MaterialCommunityIcons name="logout" size={24} color="black" />
           </Pressable>
         )}
-        <Pressable onPress={() => setAddContentModalVisible(true)}>
+        <Pressable onPress={() => setIsAddContentModalVisible(true)}>
           <Entypo name="plus" size={40} color="#051542" />
         </Pressable>
       </View>

@@ -1,4 +1,3 @@
-import { contents } from "../constants/contents";
 import { Content } from "../types";
 
 const youtubeBaseUrl = "https://youtu.be/";
@@ -22,14 +21,6 @@ export function getContentSource(source: string): string {
   if (source.startsWith(facebookBaseUrl)) return "facebook";
   if (source.startsWith(mediumBaseUrl)) return "medium";
   return "unknown";
-}
-
-export function getContents(): Content[] {
-  return contents;
-}
-
-export function getContentById(id: string): Content | undefined {
-  return contents.find((content) => content.id === id);
 }
 
 export function extractYoutubeIdFromUrl(url: string): string {

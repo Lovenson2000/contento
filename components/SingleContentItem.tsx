@@ -7,7 +7,8 @@ import { useRouter } from "expo-router";
 import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 
 export default function SingleContentItem({ content }: { content: Content }) {
-  const iconSource = socialMediaIcons[content.source];
+  const iconSource =
+    socialMediaIcons[content.source?.toLocaleLowerCase() as string];
   const router = useRouter();
 
   return (

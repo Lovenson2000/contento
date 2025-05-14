@@ -34,8 +34,7 @@ export default function AddNewContentModal({
   const [isSaving, setIsSaving] = useState(false);
   const modalHeight = useRef(new Animated.Value(0.7)).current;
 
-  const authContext = useAuth();
-  const user = authContext?.user;
+  const user = useAuth()?.user;
 
   useEffect(() => {
     const keyboardShow = Keyboard.addListener(

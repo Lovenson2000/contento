@@ -1,10 +1,10 @@
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { getContentById } from "@/lib/utils/content";
 import { Content } from "@/lib/types";
 import TwitterScreen from "@/components/screens/TwitterScreen";
 import YoutubeScreen from "@/components/screens/YoutubeScreen";
+import { fetchContentById } from "@/lib/api/content";
 
 export default function ContentDetailPage() {
   const params = useLocalSearchParams();
@@ -14,8 +14,9 @@ export default function ContentDetailPage() {
 
   useEffect(() => {
     if (id) {
-      const result = getContentById(id);
-      setContent(result);
+      fetchContentById(id).then((result) => {
+        setContent(result || undefined);
+      });
     }
   }, [id]);
 

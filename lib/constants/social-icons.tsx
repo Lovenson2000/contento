@@ -1,13 +1,13 @@
 import { ImageSourcePropType } from "react-native";
 
 export const socialMediaIcons: Record<string, ImageSourcePropType> = {
-  YouTube: require("@/assets/images/youtube.png"),
-  Tiktok: require("@/assets/images/tiktok.png"),
-  Instagram: require("@/assets/images/instagram.png"),
-  Twitter: require("@/assets/images/twitter.png"),
-  Facebook: require("@/assets/images/facebook.png"),
-  Reddit: require("@/assets/images/reddit.png"),
-  LinkedIn: require("@/assets/images/linkedin.png"),
-  Medium: require("@/assets/images/medium.png"),
-  Quora: require("@/assets/images/quora.png"),
+  youtube: require("@/assets/images/youtube.png"),
+  tiktok: require("@/assets/images/tiktok.png"),
+  instagram: require("@/assets/images/instagram.png"),
+  twitter: require("@/assets/images/twitter.png"),
+  facebook: require("@/assets/images/facebook.png"),
+  reddit: require("@/assets/images/reddit.png"),
+  linkedIn: require("@/assets/images/linkedin.png"),
+  medium: require("@/assets/images/medium.png"),
+  quora: require("@/assets/images/quora.png"),
 };

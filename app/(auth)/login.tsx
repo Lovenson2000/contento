@@ -27,8 +27,12 @@ export default function LoginScreen() {
       password: password,
     });
 
-    if (error) Alert.alert(error.message);
-    setLoading(false);
+    if (error) {
+      Alert.alert(error.message);
+      setLoading(false);
+    } else {
+      router.replace("/(tabs)");
+    }
   }
 
   return (

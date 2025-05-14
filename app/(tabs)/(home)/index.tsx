@@ -25,6 +25,7 @@ import AddNewContentModal from "@/components/AddContentModal";
 import EmptySavesScreen from "@/components/screens/EmptySavesScreen";
 import { Content } from "@/lib/types";
 import { fetchUserContents } from "@/lib/api/content";
+import NoContentScreen from "@/components/screens/NoContentScreen";
 
 export default function Index() {
   const [sourceModalVisible, setSourceModalVisible] = useState(false);
@@ -164,13 +165,19 @@ export default function Index() {
 
       <SafeAreaView className="flex-1 w-full">
         {!user && <EmptySavesScreen />}
-        <FlatList
-          data={user ? filteredContents : []}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <SingleContentItem content={item} />}
-          className="flex-1 w-full"
-          contentContainerStyle={{ paddingBottom: 20 }}
-        />
+        {user && filteredContents.length === 0 ? (
+          <NoContentScreen
+            onAddContentPress={() => setIsAddContentModalVisible(true)}
+          />
+        ) : (
+          <FlatList
+            data={user ? filteredContents : []}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => <SingleContentItem content={item} />}
+            className="flex-1 w-full"
+            contentContainerStyle={{ paddingBottom: 20 }}
+          />
+        )}
 
         <Modal
           visible={sourceModalVisible}

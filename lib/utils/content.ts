@@ -34,3 +34,10 @@ export function extractInstagramIdFromUrl(url: string): string {
   const match = regex.exec(url);
   return match ? match[1] : "dQw4w9WgXcQ";
 }
+
+export const truncateText = (text: string, maxLength: number): string => {
+  if (text.length > maxLength) {
+    return text.substring(0, maxLength) + "...";
+  }
+  return text;
+};

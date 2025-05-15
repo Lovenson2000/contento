@@ -9,6 +9,8 @@ type Props = {
   onDelete: () => void;
   onEdit: () => void;
   onAddToFavorites: () => void;
+  onRemoveFromFavorites: () => void;
+  isFavorite?: boolean;
   position: { top: number; left: number };
 };
 
@@ -18,6 +20,8 @@ export default function SingleContentMenuModal({
   onDelete,
   onEdit,
   onAddToFavorites,
+  onRemoveFromFavorites,
+  isFavorite,
   position,
 }: Props) {
   return (
@@ -50,9 +54,9 @@ export default function SingleContentMenuModal({
           />
 
           <SingleMenuItem
-            label="Add to Favorites"
+            label={isFavorite ? "Mark Not Favorite" : "Add To Favorites"}
             onPress={() => {
-              onAddToFavorites();
+              isFavorite ? onRemoveFromFavorites() : onAddToFavorites();
               onClose();
             }}
             icon={<AntDesign name="staro" size={18} color="#334155" />}

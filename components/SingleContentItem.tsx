@@ -8,6 +8,11 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useRouter } from "expo-router";
 import SingleContentMenuModal from "./SingleContentMenuModal";
+import {
+  deleteContent,
+  markAsFavorite,
+  markNotFavorite,
+} from "@/lib/api/content";
 
 export default function SingleContentItem({ content }: { content: Content }) {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -21,6 +26,39 @@ export default function SingleContentItem({ content }: { content: Content }) {
     const { pageX, pageY } = event.nativeEvent;
     setMenuPosition({ top: pageY, left: pageX });
     setMenuVisible(true);
+  };
+
+  const handleDeleteContent = async () => {
+    try {
+      await deleteContent(content.id);
+    } catch (error) {
+      console.error(error);
+    }
+    setMenuVisible(false);
+  };
+
+  const handleMarkAsFavorite = async () => {
+    try {
+      if (!content.isFavorite) {
+        await markAsFavorite(content.id);
+        alert("Added to favorites");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    setMenuVisible(false);
+  };
+
+  const handleMarkNotFavorite = async () => {
+    try {
+      if (content.isFavorite) {
+        await markNotFavorite(content.id);
+        alert("Removed from favorites");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    setMenuVisible(false);
   };
 
   return (
@@ -75,19 +113,15 @@ export default function SingleContentItem({ content }: { content: Content }) {
       <SingleContentMenuModal
         visible={menuVisible}
         onClose={() => setMenuVisible(false)}
-        onDelete={() => {
-          setMenuVisible(false);
-          alert("Delete clicked");
-        }}
+        onDelete={handleDeleteContent}
         onEdit={() => {
           setMenuVisible(false);
           alert("Edit clicked");
         }}
-        onAddToFavorites={() => {
-          setMenuVisible(false);
-          alert("Add to Favorites clicked");
-        }}
+        onAddToFavorites={handleMarkAsFavorite}
+        onRemoveFromFavorites={handleMarkNotFavorite}
         position={menuPosition}
+        isFavorite={content.isFavorite}
       />
     </>
   );

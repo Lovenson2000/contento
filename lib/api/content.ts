@@ -38,3 +38,47 @@ export const fetchContentById = async (id: string): Promise<Content | null> => {
 
   return data?.[0] ?? null;
 };
+
+export const updateContent = async (
+  id: string,
+  updatedFields: Partial<Content>
+): Promise<Content> => {
+  const { data, error } = await supabase
+    .from("content")
+    .update(updatedFields)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as Content;
+};
+
+export const deleteContent = async (id: string): Promise<void> => {
+  const { error } = await supabase.from("content").delete().eq("id", id);
+  if (error) throw error;
+};
+
+export const markAsFavorite = async (id: string): Promise<Content> => {
+  const { data, error } = await supabase
+    .from("content")
+    .update({ isFavorite: true })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as Content;
+};
+
+export const markNotFavorite = async (id: string): Promise<Content> => {
+  const { data, error } = await supabase
+    .from("content")
+    .update({ isFavorite: false })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as Content;
+};

@@ -75,16 +75,17 @@ export default function Index() {
     setShowFavorites(false);
   };
 
+  const loadUserContents = async () => {
+    if (!user?.id) return;
+    try {
+      const contents = await fetchUserContents(user.id);
+      setAllContents(contents);
+    } catch (err) {
+      console.error("Failed to load contents:", err);
+    }
+  };
+
   useEffect(() => {
-    const loadUserContents = async () => {
-      if (!user?.id) return;
-      try {
-        const contents = await fetchUserContents(user.id);
-        setAllContents(contents);
-      } catch (err) {
-        console.error("Failed to load contents:", err);
-      }
-    };
     loadUserContents();
   }, [user]);
 
@@ -135,6 +136,7 @@ export default function Index() {
       <AddNewContentModal
         isVisible={isAddContentModalVisible}
         onClose={handleAddContentModalClose}
+        onContentAdded={loadUserContents}
       />
       <View className="flex-row items-center border rounded-lg bg-gray-50 border-slate-100 px-2 py-0.5 mb-4">
         <Ionicons name="search" size={20} color="#64748b" className="mr-2" />

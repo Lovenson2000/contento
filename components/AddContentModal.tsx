@@ -18,10 +18,12 @@ import CrossPlatformDateTimePicker from "./DateTimePicker";
 type AddNewContentModalProps = {
   isVisible: boolean;
   onClose: () => void;
+  onContentAdded: () => void;
 };
 export default function AddNewContentModal({
   isVisible,
   onClose,
+  onContentAdded,
 }: AddNewContentModalProps) {
   const [url, setUrl] = useState("");
   const [tags, setTags] = useState("");
@@ -89,6 +91,7 @@ export default function AddNewContentModal({
       setUrl("");
       setTags("");
       setReminderDate(null);
+      onContentAdded();
       onClose();
     } catch (err) {
       console.error("Failed to save content:", err);

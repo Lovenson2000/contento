@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { socialMediaIcons } from "@/lib/constants/social-icons";
 import { Content } from "@/lib/types";
-import { truncateText } from "@/lib/utils/content";
+import { capitalizeFirstLetter, truncateText } from "@/lib/utils/content";
 import { formatRemindTime } from "@/lib/utils/time";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -84,7 +84,9 @@ export default function SingleContentItem({ content }: { content: Content }) {
           )}
           <View className="flex flex-col">
             <Text className="text-xl">{truncateText(content.title, 30)}</Text>
-            <Text className="text-sm text-gray-500">{content.source}</Text>
+            <Text className="text-sm text-gray-500">
+              {capitalizeFirstLetter(content.source!)}
+            </Text>
           </View>
         </View>
 

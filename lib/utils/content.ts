@@ -1,3 +1,4 @@
+import { string } from "prop-types";
 import { Content } from "../types";
 
 const youtubeBaseUrl = "https://youtu.be/";
@@ -40,4 +41,8 @@ export const truncateText = (text: string, maxLength: number): string => {
     return text.substring(0, maxLength) + "...";
   }
   return text;
+};
+
+export const capitalizeFirstLetter = (word: string): string => {
+  return word.charAt(0).toUpperCase() + word.slice(1);
 };

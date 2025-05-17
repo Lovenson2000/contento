@@ -16,7 +16,14 @@ import {
 } from "@/lib/api/content";
 import CrossPlatformDateTimePicker from "./DateTimePicker";
 
-export default function SingleContentItem({ content }: { content: Content }) {
+type SingleContentItemProps = {
+  content: Content;
+  onContentUpdated: () => void;
+};
+export default function SingleContentItem({
+  content,
+  onContentUpdated,
+}: SingleContentItemProps) {
   const [menuVisible, setMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
@@ -43,6 +50,7 @@ export default function SingleContentItem({ content }: { content: Content }) {
       console.error(error);
     }
     setMenuVisible(false);
+    onContentUpdated();
   };
 
   const handleMarkAsFavorite = async () => {
@@ -55,6 +63,7 @@ export default function SingleContentItem({ content }: { content: Content }) {
       console.error(error);
     }
     setMenuVisible(false);
+    onContentUpdated();
   };
 
   const handleMarkNotFavorite = async () => {
@@ -67,6 +76,7 @@ export default function SingleContentItem({ content }: { content: Content }) {
       console.error(error);
     }
     setMenuVisible(false);
+    onContentUpdated();
   };
 
   const handleReminderChange = async (newDate: Date) => {
@@ -74,7 +84,7 @@ export default function SingleContentItem({ content }: { content: Content }) {
 
     try {
       await updateContent(selectedContentId, { remindAt: newDate });
-      alert("Reminder added!");
+      onContentUpdated();
     } catch (error) {
       console.error(error);
       alert("Failed to add reminder.");

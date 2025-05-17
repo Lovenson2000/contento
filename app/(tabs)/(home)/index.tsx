@@ -178,7 +178,12 @@ export default function Index() {
           <FlatList
             data={user ? filteredContents : []}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <SingleContentItem content={item} />}
+            renderItem={({ item }) => (
+              <SingleContentItem
+                content={item}
+                onContentUpdated={loadUserContents}
+              />
+            )}
             className="flex-1 w-full"
             contentContainerStyle={{ paddingBottom: 20 }}
           />

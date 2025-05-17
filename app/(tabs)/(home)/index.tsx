@@ -129,7 +129,10 @@ export default function Index() {
             <MaterialCommunityIcons name="logout" size={24} color="black" />
           </Pressable>
         )}
-        <Pressable onPress={() => setIsAddContentModalVisible(true)}>
+        <Pressable
+          onPress={() => setIsAddContentModalVisible(true)}
+          disabled={!user}
+        >
           <Entypo name="plus" size={40} color="#051542" />
         </Pressable>
       </View>

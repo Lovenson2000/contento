@@ -46,3 +46,23 @@ export const truncateText = (text: string, maxLength: number): string => {
 export const capitalizeFirstLetter = (word: string): string => {
   return word.charAt(0).toUpperCase() + word.slice(1);
 };
+
+export const normalizeUrl = (url: string): string => {
+  try {
+    let cleaned = url.trim();
+
+    if (!/^https?:\/\//i.test(cleaned)) {
+      cleaned = "https://" + cleaned;
+    }
+
+    const ytRegex = /^https?:\/\/youtu\.be\/([\w-]+)/;
+    const ytMatch = ytRegex.exec(cleaned);
+    if (ytMatch) {
+      return `https://www.youtube.com/watch?v=${ytMatch[1]}`;
+    }
+
+    return cleaned;
+  } catch {
+    return url;
+  }
+};

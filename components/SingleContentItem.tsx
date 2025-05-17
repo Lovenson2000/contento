@@ -161,8 +161,9 @@ export default function SingleContentItem({
         }}
         onAddToFavorites={handleMarkAsFavorite}
         onRemoveFromFavorites={handleMarkNotFavorite}
-        position={menuPosition}
         isFavorite={content.isFavorite}
+        position={menuPosition}
+        content={content}
       />
       <CrossPlatformDateTimePicker
         value={dateValue}

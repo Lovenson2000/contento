@@ -1,7 +1,10 @@
 import React from "react";
-import { Modal, Pressable, View } from "react-native";
-import { MaterialIcons, Feather, AntDesign } from "@expo/vector-icons";
+import { Linking, Modal, Pressable, View, Platform, Alert } from "react-native";
+import { MaterialIcons, Feather, AntDesign, Entypo } from "@expo/vector-icons";
 import SingleMenuItem from "./SingleMenuItem";
+import { Content } from "@/lib/types";
+import * as WebBrowser from "expo-web-browser";
+import { capitalizeFirstLetter, normalizeUrl } from "@/lib/utils/content";
 
 type Props = {
   visible: boolean;
@@ -12,6 +15,7 @@ type Props = {
   onRemoveFromFavorites: () => void;
   isFavorite?: boolean;
   position: { top: number; left: number };
+  content: Content;
 };
 
 export default function SingleContentMenuModal({
@@ -23,7 +27,34 @@ export default function SingleContentMenuModal({
   onRemoveFromFavorites,
   isFavorite,
   position,
+  content,
 }: Props) {
+  const handleOpenLink = async () => {
+    const url = normalizeUrl(content.url);
+
+    try {
+      if (Platform.OS === "android") {
+        await Linking.openURL(url);
+      } else {
+        const supported = await Linking.canOpenURL(url);
+        if (supported) {
+          await Linking.openURL(url);
+        } else {
+          await WebBrowser.openBrowserAsync(url);
+        }
+      }
+    } catch (error) {
+      console.warn("Failed to open URL:", url, error);
+      try {
+        await WebBrowser.openBrowserAsync(url);
+      } catch {
+        Alert.alert("Error", "Could not open the link.");
+      }
+    } finally {
+      onClose();
+    }
+  };
+
   return (
     <Modal
       visible={visible}
@@ -44,6 +75,14 @@ export default function SingleContentMenuModal({
             elevation: 3,
           }}
         >
+          <SingleMenuItem
+            label={`Open in ${capitalizeFirstLetter(content.source!)}`}
+            onPress={() => {
+              handleOpenLink();
+            }}
+            icon={<Entypo name="link" size={18} color="#334155" />}
+          />
+
           <SingleMenuItem
             label="Edit"
             onPress={() => {

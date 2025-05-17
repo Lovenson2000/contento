@@ -29,7 +29,7 @@ export default function ContentDetailPage() {
   }
 
   return (
-    <View style={styles.contentScreenContainer}>
+    <View className="flex-1 bg-white p-4">
       {content?.source?.toLocaleLowerCase() === "youtube" && (
         <YoutubeScreen content={content} />
       )}
@@ -40,11 +40,3 @@ export default function ContentDetailPage() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  contentScreenContainer: {
-    backgroundColor: "white",
-    flex: 1,
-    padding: 16,
-  },
-});

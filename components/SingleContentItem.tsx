@@ -12,11 +12,19 @@ import {
   deleteContent,
   markAsFavorite,
   markNotFavorite,
+  updateContent,
 } from "@/lib/api/content";
+import CrossPlatformDateTimePicker from "./DateTimePicker";
 
 export default function SingleContentItem({ content }: { content: Content }) {
   const [menuVisible, setMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+  const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
+  const [selectedContentId, setSelectedContentId] = useState<string | null>(
+    null
+  );
+  const [dateValue, setDateValue] = useState(new Date());
+
   const router = useRouter();
 
   const iconSource =
@@ -61,6 +69,21 @@ export default function SingleContentItem({ content }: { content: Content }) {
     setMenuVisible(false);
   };
 
+  const handleReminderChange = async (newDate: Date) => {
+    if (!selectedContentId) return;
+
+    try {
+      await updateContent(selectedContentId, { remindAt: newDate });
+      alert("Reminder added!");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to add reminder.");
+    } finally {
+      setIsDatePickerVisible(false);
+      setSelectedContentId(null);
+    }
+  };
+
   return (
     <>
       <TouchableOpacity
@@ -103,7 +126,13 @@ export default function SingleContentItem({ content }: { content: Content }) {
               </Text>
             </View>
           ) : (
-            <Pressable onPress={() => alert("Add Reminder clicked")}>
+            <Pressable
+              onPress={() => {
+                setSelectedContentId(content.id);
+                setDateValue(new Date());
+                setIsDatePickerVisible(true);
+              }}
+            >
               <Text className="text-sm text-slate-900 bg-gray-100 px-2 py-1 rounded-lg">
                 Add Reminder
               </Text>
@@ -124,6 +153,15 @@ export default function SingleContentItem({ content }: { content: Content }) {
         onRemoveFromFavorites={handleMarkNotFavorite}
         position={menuPosition}
         isFavorite={content.isFavorite}
+      />
+      <CrossPlatformDateTimePicker
+        value={dateValue}
+        visible={isDatePickerVisible}
+        onChange={handleReminderChange}
+        onDismiss={() => {
+          setIsDatePickerVisible(false);
+          setSelectedContentId(null);
+        }}
       />
     </>
   );

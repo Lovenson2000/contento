@@ -26,6 +26,7 @@ import EmptySavesScreen from "@/components/screens/EmptySavesScreen";
 import { Content } from "@/lib/types";
 import { fetchUserContents } from "@/lib/api/content";
 import NoContentScreen from "@/components/screens/NoContentScreen";
+import LoadingScreen from "@/components/screens/LoadingScreen";
 
 export default function Index() {
   const [sourceModalVisible, setSourceModalVisible] = useState(false);
@@ -38,6 +39,8 @@ export default function Index() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddContentModalVisible, setIsAddContentModalVisible] =
     useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showNoContentScreen, setShowNoContentScreen] = useState(false);
 
   const signout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -78,10 +81,13 @@ export default function Index() {
   const loadUserContents = async () => {
     if (!user?.id) return;
     try {
+      setIsLoading(true);
       const contents = await fetchUserContents(user.id);
       setAllContents(contents);
     } catch (err) {
       console.error("Failed to load contents:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -119,6 +125,20 @@ export default function Index() {
 
     setFilteredContents(result);
   }, [selectedSource, selectedTags, showFavorites, searchQuery, allContents]);
+  useEffect(() => {
+    if (!isLoading && user && filteredContents.length === 0) {
+      const timer = setTimeout(() => {
+        setShowNoContentScreen(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    } else {
+      setShowNoContentScreen(false);
+    }
+  }, [isLoading, user, filteredContents]);
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <View className="bg-white flex-1 p-4">
@@ -170,7 +190,7 @@ export default function Index() {
 
       <SafeAreaView className="flex-1 w-full">
         {!user && <EmptySavesScreen />}
-        {user && filteredContents.length === 0 ? (
+        {user && showNoContentScreen ? (
           <NoContentScreen
             onAddContentPress={() => setIsAddContentModalVisible(true)}
           />

@@ -76,7 +76,11 @@ export default function SingleContentMenuModal({
           }}
         >
           <SingleMenuItem
-            label={`Open in ${capitalizeFirstLetter(content.source!)}`}
+            label={
+              content.source?.toLocaleLowerCase() === "unknown"
+                ? "Open"
+                : `Open in ${capitalizeFirstLetter(content.source!)}`
+            }
             onPress={() => {
               handleOpenLink();
             }}

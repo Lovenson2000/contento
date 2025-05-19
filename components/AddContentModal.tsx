@@ -90,6 +90,7 @@ export default function AddNewContentModal({
 
       setUrl("");
       setTags("");
+      setTitle("");
       setReminderDate(null);
       onContentAdded();
       onClose();

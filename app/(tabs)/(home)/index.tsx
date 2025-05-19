@@ -26,7 +26,8 @@ import { Content } from "@/lib/types";
 import { fetchUserContents } from "@/lib/api/content";
 import NoContentScreen from "@/components/screens/NoContentScreen";
 import LoadingScreen from "@/components/screens/LoadingScreen";
-
+import { useRouter } from "expo-router";
+import { useShareIntentContext } from "expo-share-intent";
 export default function Index() {
   const [sourceModalVisible, setSourceModalVisible] = useState(false);
   const [showTags, setShowTags] = useState(false);
@@ -93,6 +94,20 @@ export default function Index() {
   useEffect(() => {
     loadUserContents();
   }, [user]);
+
+  const router = useRouter();
+
+  const { hasShareIntent } = useShareIntentContext();
+
+  useEffect(() => {
+    if (hasShareIntent) {
+      // we want to handle share intent event in a specific page
+      console.debug("[expo-router-index] redirect to ShareIntent screen");
+      router.replace({
+        pathname: "/(tabs)/saved-content", // TEMPORARY
+      });
+    }
+  }, [hasShareIntent]);
 
   useEffect(() => {
     let result = allContents;

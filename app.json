@@ -45,6 +45,18 @@
         {
           "iosUrlScheme": "com.googleusercontent.apps.261684861816-7solo5na1ar1u3547qe2ieu49477omgm"
         }
+      ],
+      [
+        "expo-share-intent",
+        {
+          "iosActivationRules": {
+            "NSExtensionActivationSupportsText": true,
+            "NSExtensionActivationSupportsWebURLWithMaxCount": 1,
+            "NSExtensionActivationSupportsWebPageWithMaxCount": 1,
+            "NSExtensionActivationSupportsImageWithMaxCount": 2
+          },
+          "androidIntentFilters": ["text/*", "image/*"]
+        }
       ]
     ],
     "experiments": {

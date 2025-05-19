@@ -10,4 +10,5 @@ export const socialMediaIcons: Record<string, ImageSourcePropType> = {
   linkedin: require("@/assets/images/linkedin.png"),
   medium: require("@/assets/images/medium.png"),
   quora: require("@/assets/images/quora.png"),
+  bluesky: require("@/assets/images/bluesky.png"),
 };

@@ -1,6 +1,3 @@
-import { string } from "prop-types";
-import { Content } from "../types";
-
 const youtubeBaseUrl = "https://youtu.be/";
 const tiktokBaseUrl = "https://vt.tiktok.com/";
 const twitterBaseUrl = "https://x.com/";
@@ -10,6 +7,7 @@ const quoraBaseUrl = "https://www.quora.com/";
 const linkedinBaseUrl = "https://www.linkedin.com/";
 const facebookBaseUrl = "https://www.facebook.com/";
 const mediumBaseUrl = "https://medium.com/";
+const blueskyBaseUrl = "https://bsky.app/";
 
 export function getContentSource(source: string): string {
   if (source.startsWith(youtubeBaseUrl)) return "youtube";
@@ -21,6 +19,7 @@ export function getContentSource(source: string): string {
   if (source.startsWith(linkedinBaseUrl)) return "linkedin";
   if (source.startsWith(facebookBaseUrl)) return "facebook";
   if (source.startsWith(mediumBaseUrl)) return "medium";
+  if (source.startsWith(blueskyBaseUrl)) return "bluesky";
   return "unknown";
 }
 

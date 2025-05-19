@@ -12,6 +12,7 @@ import FacebookScreen from "@/components/screens/FacebookScreen";
 import RedditScreen from "@/components/screens/RedditScreen";
 import TiktokScreen from "@/components/screens/TiktokScreen";
 import MediumScreen from "@/components/screens/MediumScreen";
+import BlueSkyScreen from "@/components/screens/BlueskyScreen";
 
 export default function ContentDetailPage() {
   const params = useLocalSearchParams();
@@ -64,6 +65,9 @@ export default function ContentDetailPage() {
       )}
       {content?.source?.toLowerCase() === "medium" && (
         <MediumScreen content={content} />
+      )}
+      {content?.source?.toLowerCase() === "bluesky" && (
+        <BlueSkyScreen content={content} />
       )}
     </View>
   );

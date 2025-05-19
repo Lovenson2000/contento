@@ -12,7 +12,6 @@ import {
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Entypo from "@expo/vector-icons/Entypo";
-import { contents } from "@/lib/constants/contents";
 import { useEffect, useState } from "react";
 import SingleContentItem from "@/components/SingleContentItem";
 import ContentsFilters from "@/components/ContentFilters";

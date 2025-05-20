@@ -79,7 +79,10 @@ export default function Index() {
   };
 
   const loadUserContents = async () => {
-    if (!user?.id) return;
+    if (!user?.id) {
+      setIsLoading(false);
+      return;
+    }
     try {
       setIsLoading(true);
       const contents = await fetchUserContents(user.id);

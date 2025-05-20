@@ -19,17 +19,23 @@ type AddNewContentModalProps = {
   isVisible: boolean;
   onClose: () => void;
   onContentAdded: () => void;
+  initialData?: {
+    title?: string;
+    url?: string;
+    source?: string;
+  };
 };
 export default function AddNewContentModal({
   isVisible,
   onClose,
   onContentAdded,
+  initialData,
 }: AddNewContentModalProps) {
-  const [url, setUrl] = useState("");
+  const [title, setTitle] = useState(initialData?.title ?? "");
+  const [url, setUrl] = useState(initialData?.url ?? "");
   const [tags, setTags] = useState("");
   const [showPicker, setShowPicker] = useState(false);
   const [reminderDate, setReminderDate] = useState<Date | null>(null);
-  const [title, setTitle] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const modalHeight = useRef(new Animated.Value(0.7)).current;
 

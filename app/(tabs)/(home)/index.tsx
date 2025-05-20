@@ -28,6 +28,7 @@ import NoContentScreen from "@/components/screens/NoContentScreen";
 import LoadingScreen from "@/components/screens/LoadingScreen";
 import { useRouter } from "expo-router";
 import { useShareIntentContext } from "expo-share-intent";
+import { getContentSource } from "@/lib/utils/content";
 export default function Index() {
   const [sourceModalVisible, setSourceModalVisible] = useState(false);
   const [showTags, setShowTags] = useState(false);
@@ -41,6 +42,11 @@ export default function Index() {
     useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showNoContentScreen, setShowNoContentScreen] = useState(false);
+  const [initialShareData, setInitialShareData] = useState<{
+    title?: string;
+    url?: string;
+    source?: string;
+  } | null>(null);
 
   const signout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -64,6 +70,7 @@ export default function Index() {
 
   const handleAddContentModalClose = () => {
     setIsAddContentModalVisible(false);
+    resetShareIntent();
   };
 
   const toggleTag = (tag: string) => {
@@ -100,17 +107,24 @@ export default function Index() {
 
   const router = useRouter();
 
-  const { hasShareIntent } = useShareIntentContext();
+  const { hasShareIntent, shareIntent, resetShareIntent } =
+    useShareIntentContext();
+  console.log(shareIntent);
+  console.log(hasShareIntent);
 
   useEffect(() => {
     if (hasShareIntent) {
-      // we want to handle share intent event in a specific page
-      console.debug("[expo-router-index] redirect to ShareIntent screen");
-      router.replace({
-        pathname: "/(tabs)/settings", // TEMPORARY
+      setInitialShareData({
+        title: shareIntent.text!,
+        source: getContentSource(shareIntent.webUrl!),
+        url: shareIntent.webUrl!,
+      });
+      setIsAddContentModalVisible(true);
+      router.navigate({
+        pathname: "/", // TEMPORARY
       });
     }
-  }, [hasShareIntent]);
+  }, [shareIntent, hasShareIntent]);
 
   useEffect(() => {
     let result = allContents;

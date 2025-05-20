@@ -9,7 +9,6 @@ export default function RootLayout() {
   return (
     <ShareIntentProvider
       options={{
-        debug: true,
         resetOnBackground: true,
         onResetShareIntent: () =>
           // used when app going in background and when the reset button is pressed

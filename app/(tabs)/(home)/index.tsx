@@ -107,7 +107,7 @@ export default function Index() {
       // we want to handle share intent event in a specific page
       console.debug("[expo-router-index] redirect to ShareIntent screen");
       router.replace({
-        pathname: "/(tabs)/saved-content", // TEMPORARY
+        pathname: "/(tabs)/settings", // TEMPORARY
       });
     }
   }, [hasShareIntent]);

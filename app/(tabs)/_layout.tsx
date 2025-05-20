@@ -32,10 +32,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="saved-content"
+        name="settings"
         options={{
           headerShown: false,
-          title: "Saved Contents",
+          title: "Settings",
           tabBarIcon: ({ color, focused }) => (
             <MaterialCommunityIcons
               name={focused ? "bookmark-check" : "bookmark-check-outline"}

@@ -6,7 +6,7 @@ export default function HomeLayout() {
     <AuthProvider>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
-        <Stack.Screen name="content-details" />
+        <Stack.Screen name="[id]" />
       </Stack>
     </AuthProvider>
   );

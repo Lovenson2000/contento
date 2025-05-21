@@ -69,8 +69,8 @@ export default function Index() {
   };
 
   const handleAddContentModalClose = () => {
-    setIsAddContentModalVisible(false);
     resetShareIntent();
+    setIsAddContentModalVisible(false);
   };
 
   const toggleTag = (tag: string) => {
@@ -107,24 +107,14 @@ export default function Index() {
 
   const router = useRouter();
 
-  const { hasShareIntent, shareIntent, resetShareIntent } =
-    useShareIntentContext();
-  console.log(shareIntent);
-  console.log(hasShareIntent);
-
+  const { hasShareIntent, resetShareIntent } = useShareIntentContext();
   useEffect(() => {
     if (hasShareIntent) {
-      setInitialShareData({
-        title: shareIntent.text!,
-        source: getContentSource(shareIntent.webUrl!),
-        url: shareIntent.webUrl!,
-      });
-      setIsAddContentModalVisible(true);
       router.navigate({
-        pathname: "/", // TEMPORARY
+        pathname: "/share",
       });
     }
-  }, [shareIntent, hasShareIntent]);
+  }, [hasShareIntent]);
 
   useEffect(() => {
     let result = allContents;
@@ -191,6 +181,7 @@ export default function Index() {
         isVisible={isAddContentModalVisible}
         onClose={handleAddContentModalClose}
         onContentAdded={loadUserContents}
+        initialData={initialShareData ?? undefined}
       />
       <View className="flex-row items-center border rounded-lg bg-gray-50 border-slate-100 px-2 py-0.5 mb-4">
         <Ionicons name="search" size={20} color="#64748b" className="mr-2" />

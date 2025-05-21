@@ -22,7 +22,6 @@ type AddNewContentModalProps = {
   initialData?: {
     title?: string;
     url?: string;
-    source?: string;
   };
 };
 export default function AddNewContentModal({
@@ -106,6 +105,13 @@ export default function AddNewContentModal({
       setIsSaving(false);
     }
   };
+
+  useEffect(() => {
+    if (initialData) {
+      setTitle(initialData.title ?? "");
+      setUrl(initialData.url ?? "");
+    }
+  }, [initialData]);
 
   return (
     <View>

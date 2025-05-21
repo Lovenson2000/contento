@@ -1,9 +1,8 @@
-import { Text, View } from "react-native";
 import { useEffect, useState } from "react";
 import AddNewContentModal from "@/components/AddContentModal";
 import { useShareIntentContext } from "expo-share-intent";
 import { useRouter } from "expo-router";
-import { getContentSource } from "@/lib/utils/content";
+import { View } from "react-native";
 
 export default function ShareScreen() {
   const router = useRouter();
@@ -11,7 +10,6 @@ export default function ShareScreen() {
   const [initialShareData, setInitialShareData] = useState<{
     title?: string;
     url?: string;
-    source?: string;
   } | null>(null);
 
   const { shareIntent, hasShareIntent, resetShareIntent } =
@@ -21,7 +19,6 @@ export default function ShareScreen() {
     if ((hasShareIntent && shareIntent?.webUrl) || shareIntent?.text) {
       setInitialShareData({
         title: shareIntent.text?.slice(0, 70) ?? "",
-        source: getContentSource(shareIntent.webUrl ?? ""),
         url: shareIntent.webUrl ?? "",
       });
       setIsModalVisible(true);

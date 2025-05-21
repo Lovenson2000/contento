@@ -28,7 +28,6 @@ import NoContentScreen from "@/components/screens/NoContentScreen";
 import LoadingScreen from "@/components/screens/LoadingScreen";
 import { useRouter } from "expo-router";
 import { useShareIntentContext } from "expo-share-intent";
-import { getContentSource } from "@/lib/utils/content";
 export default function Index() {
   const [sourceModalVisible, setSourceModalVisible] = useState(false);
   const [showTags, setShowTags] = useState(false);
@@ -42,11 +41,6 @@ export default function Index() {
     useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showNoContentScreen, setShowNoContentScreen] = useState(false);
-  const [initialShareData, setInitialShareData] = useState<{
-    title?: string;
-    url?: string;
-    source?: string;
-  } | null>(null);
 
   const signout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -181,7 +175,6 @@ export default function Index() {
         isVisible={isAddContentModalVisible}
         onClose={handleAddContentModalClose}
         onContentAdded={loadUserContents}
-        initialData={initialShareData ?? undefined}
       />
       <View className="flex-row items-center border rounded-lg bg-gray-50 border-slate-100 px-2 py-0.5 mb-4">
         <Ionicons name="search" size={20} color="#64748b" className="mr-2" />

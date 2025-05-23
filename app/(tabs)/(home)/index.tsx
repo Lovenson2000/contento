@@ -42,15 +42,6 @@ export default function Index() {
   const [isLoading, setIsLoading] = useState(true);
   const [showNoContentScreen, setShowNoContentScreen] = useState(false);
 
-  const signout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error("Error signing out:", error.message);
-    } else {
-      console.log("Signed out successfully");
-    }
-  };
-
   const user = useAuth()?.user;
 
   const allTags = Array.from(
@@ -159,11 +150,6 @@ export default function Index() {
     <View className="bg-white flex-1 p-4">
       <View className="flex-row items-center justify-between mt-2 mb-6">
         <Text className="text-4xl font-semibold text-slate-800">My Saves</Text>
-        {user && (
-          <Pressable onPress={signout}>
-            <MaterialCommunityIcons name="logout" size={24} color="black" />
-          </Pressable>
-        )}
         <Pressable
           onPress={() => setIsAddContentModalVisible(true)}
           disabled={!user}

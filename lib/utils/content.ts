@@ -1,4 +1,6 @@
 const youtubeBaseUrl = "https://youtu.be/";
+const youtubeWatchBaseUrl = "https://www.youtube.com/";
+const youtubeMobileBaseUrl = "https://youtube.com/";
 const tiktokBaseUrl = "https://vt.tiktok.com/";
 const twitterBaseUrl = "https://x.com/";
 const instagramBaseUrl = "https://www.instagram.com/";
@@ -10,7 +12,12 @@ const mediumBaseUrl = "https://medium.com/";
 const blueskyBaseUrl = "https://bsky.app/";
 
 export function getContentSource(source: string): string {
-  if (source.startsWith(youtubeBaseUrl)) return "youtube";
+  if (
+    source.startsWith(youtubeBaseUrl) ||
+    source.startsWith(youtubeWatchBaseUrl) ||
+    source.startsWith(youtubeMobileBaseUrl)
+  )
+    return "youtube";
   if (source.startsWith(tiktokBaseUrl)) return "tiktok";
   if (source.startsWith(twitterBaseUrl)) return "twitter";
   if (source.startsWith(instagramBaseUrl)) return "instagram";

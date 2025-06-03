@@ -69,6 +69,9 @@ export default function ContentDetailPage() {
       {content?.source?.toLowerCase() === "bluesky" && (
         <BlueSkyScreen content={content} />
       )}
+      {content?.source?.toLowerCase() === "unknown" && (
+        <BlueSkyScreen content={content} />
+      )}
     </View>
   );
 }

@@ -57,6 +57,14 @@
           },
           "androidIntentFilters": ["text/*", "image/*"]
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/logo.jpg",
+          "color": "#ffffff",
+          "enableBackgroundRemoteNotifications": true
+        }
       ]
     ],
     "experiments": {

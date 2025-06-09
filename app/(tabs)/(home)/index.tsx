@@ -17,8 +17,6 @@ import SingleContentItem from "@/components/SingleContentItem";
 import ContentsFilters from "@/components/ContentFilters";
 import { socialMediaIcons } from "@/lib/constants/social-icons";
 import TagsFilter from "@/components/TagsFilter";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import AddNewContentModal from "@/components/AddContentModal";
 import EmptySavesScreen from "@/components/screens/EmptySavesScreen";
@@ -28,6 +26,7 @@ import NoContentScreen from "@/components/screens/NoContentScreen";
 import LoadingScreen from "@/components/screens/LoadingScreen";
 import { useRouter } from "expo-router";
 import { useShareIntentContext } from "expo-share-intent";
+import { usePushNotifications } from "@/lib/hooks/usePushNotifications";
 export default function Index() {
   const [sourceModalVisible, setSourceModalVisible] = useState(false);
   const [showTags, setShowTags] = useState(false);
@@ -41,6 +40,8 @@ export default function Index() {
     useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showNoContentScreen, setShowNoContentScreen] = useState(false);
+
+  const { schedulePushNotification } = usePushNotifications();
 
   const user = useAuth()?.user;
 
@@ -141,6 +142,18 @@ export default function Index() {
       setShowNoContentScreen(false);
     }
   }, [isLoading, user, filteredContents]);
+
+  useEffect(() => {
+    // Schedule notifications for contents with remindAt in the future
+    allContents.forEach((content) => {
+      if (content.remindAt) {
+        const remindDate = new Date(content.remindAt);
+        if (remindDate > new Date()) {
+          schedulePushNotification(remindDate, content.title, content.id);
+        }
+      }
+    });
+  }, [allContents]);
 
   if (isLoading) {
     return <LoadingScreen />;

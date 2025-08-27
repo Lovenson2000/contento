@@ -55,7 +55,10 @@
             "NSExtensionActivationSupportsWebPageWithMaxCount": 1,
             "NSExtensionActivationSupportsImageWithMaxCount": 2
           },
-          "androidIntentFilters": ["text/*", "image/*"]
+          "androidIntentFilters": [
+            "text/*",
+            "image/*"
+          ]
         }
       ],
       [
@@ -73,7 +76,23 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "7dda0cc0-6209-4911-bb1b-5ded06254925"
+        "build": {
+          "experimental": {
+            "ios": {
+              "appExtensions": [
+                {
+                  "bundleIdentifier": "com.lovenson.contento.share-extension",
+                  "entitlements": {
+                    "com.apple.security.application-groups": [
+                      "group.com.lovenson.contento"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "projectId": "0e2b70a0-3292-4047-8d64-8ba797399872"
       }
     }
   }

@@ -15,6 +15,7 @@ import {
   updateContent,
 } from "@/lib/api/content";
 import CrossPlatformDateTimePicker from "./DateTimePicker";
+import Fontisto from '@expo/vector-icons/Fontisto';
 
 type SingleContentItemProps = {
   content: Content;
@@ -109,6 +110,7 @@ export default function SingleContentItem({
         </Pressable>
 
         <View className="flex flex-row items-center justify-center mb-6">
+
           {iconSource && (
             <Image
               source={iconSource}
@@ -120,10 +122,24 @@ export default function SingleContentItem({
             <Text className="text-sm text-gray-500">
               {capitalizeFirstLetter(content.source!)}
             </Text>
-          </View>
-        </View>
-
+          </View>    
+        </View>  
+        <Pressable className="absolute right-4 top-4"
+           onPress={() => {
+            if(content.isFavorite){
+              handleMarkNotFavorite();
+            }else{
+              handleMarkAsFavorite();
+            }
+           }}>
+           {content.isFavorite ? (
+            <Fontisto name="star" size={20} color="black" style={{ width: 32, height: 32, marginRight: 10 }} />
+          ) : (
+            <Ionicons name="star-outline" size={20} color="black"  style={{ width: 32, height: 32, marginRight: 10 }} />
+          )}
+        </Pressable>
         <View className="absolute right-4 bottom-4">
+
           {content.remindAt ? (
             <View className="flex-row items-center text-xs flex-1 gap-2 border rounded-md border-slate-100 px-2 py-1 text-gray-400">
               <Ionicons
@@ -133,7 +149,7 @@ export default function SingleContentItem({
               />
               <Text className="text-sm text-slate-700">
                 {formatRemindTime(new Date(content.remindAt))}
-              </Text>
+              </Text>           
             </View>
           ) : (
             <Pressable

@@ -8,29 +8,24 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useRouter } from "expo-router";
 import SingleContentMenuModal from "./SingleContentMenuModal";
-import {
-  deleteContent,
-  markAsFavorite,
-  markNotFavorite,
-  updateContent,
-} from "@/lib/api/content";
 import CrossPlatformDateTimePicker from "./DateTimePicker";
+import { useContent } from "@/lib/api/hooks/useContent";
 
 type SingleContentItemProps = {
   content: Content;
-  onContentUpdated: () => void;
 };
-export default function SingleContentItem({
-  content,
-  onContentUpdated,
-}: SingleContentItemProps) {
+export default function SingleContentItem({ content }: SingleContentItemProps) {
   const [menuVisible, setMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [selectedContentId, setSelectedContentId] = useState<string | null>(
-    null
-  );
   const [dateValue, setDateValue] = useState(new Date());
+
+  const {
+    deleteContentMutation,
+    markContentAsFavorite,
+    removeContentFromFavorites,
+    updateContentReminderDate,
+  } = useContent();
 
   const router = useRouter();
 
@@ -43,54 +38,45 @@ export default function SingleContentItem({
     setMenuVisible(true);
   };
 
+  const handleAddReminder = () => {
+    setDateValue(new Date());
+    setIsDatePickerVisible(true);
+  };
+
   const handleDeleteContent = async () => {
     try {
-      await deleteContent(content.id);
-    } catch (error) {
-      console.error(error);
+      await deleteContentMutation.mutateAsync({ id: content.id });
+    } catch (err) {
+      console.error(err);
     }
-    setMenuVisible(false);
-    onContentUpdated();
   };
 
   const handleMarkAsFavorite = async () => {
     try {
-      if (!content.isFavorite) {
-        await markAsFavorite(content.id);
-        alert("Added to favorites");
-      }
-    } catch (error) {
-      console.error(error);
+      await markContentAsFavorite.mutateAsync({ contentId: content.id });
+    } catch (err) {
+      console.error(err);
     }
-    setMenuVisible(false);
-    onContentUpdated();
   };
 
-  const handleMarkNotFavorite = async () => {
+  const handleRemoveFromFavorites = async () => {
     try {
-      if (content.isFavorite) {
-        await markNotFavorite(content.id);
-        alert("Removed from favorites");
-      }
-    } catch (error) {
-      console.error(error);
+      await removeContentFromFavorites.mutateAsync({ contentId: content.id });
+    } catch (err) {
+      console.error(err);
     }
-    setMenuVisible(false);
-    onContentUpdated();
   };
 
-  const handleReminderChange = async (newDate: Date) => {
-    if (!selectedContentId) return;
-
+  const handleUpdateContentReminderDate = async (newDate: Date) => {
     try {
-      await updateContent(selectedContentId, { remindAt: newDate });
-      onContentUpdated();
-    } catch (error) {
-      console.error(error);
-      alert("Failed to add reminder.");
+      await updateContentReminderDate.mutateAsync({
+        contentId: content.id,
+        newDate: newDate,
+      });
+    } catch (err) {
+      console.error(err);
     } finally {
       setIsDatePickerVisible(false);
-      setSelectedContentId(null);
     }
   };
 
@@ -136,13 +122,7 @@ export default function SingleContentItem({
               </Text>
             </View>
           ) : (
-            <Pressable
-              onPress={() => {
-                setSelectedContentId(content.id);
-                setDateValue(new Date());
-                setIsDatePickerVisible(true);
-              }}
-            >
+            <Pressable onPress={handleAddReminder}>
               <Text className="text-sm text-slate-900 bg-gray-100 px-2 py-1 rounded-lg">
                 Add Reminder
               </Text>
@@ -160,7 +140,7 @@ export default function SingleContentItem({
           alert("Edit clicked");
         }}
         onAddToFavorites={handleMarkAsFavorite}
-        onRemoveFromFavorites={handleMarkNotFavorite}
+        onRemoveFromFavorites={handleRemoveFromFavorites}
         isFavorite={content.isFavorite}
         position={menuPosition}
         content={content}
@@ -168,11 +148,8 @@ export default function SingleContentItem({
       <CrossPlatformDateTimePicker
         value={dateValue}
         visible={isDatePickerVisible}
-        onChange={handleReminderChange}
-        onDismiss={() => {
-          setIsDatePickerVisible(false);
-          setSelectedContentId(null);
-        }}
+        onChange={handleUpdateContentReminderDate}
+        onDismiss={() => setIsDatePickerVisible(false)}
       />
     </>
   );

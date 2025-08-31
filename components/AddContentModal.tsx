@@ -10,10 +10,10 @@ import {
 } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { createContent } from "@/lib/api/content";
 import { useAuth } from "@/context/AuthContext";
 import { getContentSource } from "@/lib/utils/content";
 import CrossPlatformDateTimePicker from "./DateTimePicker";
+import { useContent } from "@/lib/api/hooks/useContent";
 
 type AddNewContentModalProps = {
   isVisible: boolean;
@@ -35,10 +35,10 @@ export default function AddNewContentModal({
   const [tags, setTags] = useState("");
   const [showPicker, setShowPicker] = useState(false);
   const [reminderDate, setReminderDate] = useState<Date | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
   const modalHeight = useRef(new Animated.Value(0.7)).current;
 
   const user = useAuth()?.user;
+  const { createContentMutation } = useContent();
 
   useEffect(() => {
     const keyboardShow = Keyboard.addListener(
@@ -75,7 +75,6 @@ export default function AddNewContentModal({
   const handleSaveContent = async () => {
     if (!url.trim()) return;
 
-    setIsSaving(true);
     try {
       const tagsArray = tags
         .split(",")
@@ -84,25 +83,26 @@ export default function AddNewContentModal({
 
       const source = getContentSource(url.trim());
 
-      await createContent({
-        url: url.trim(),
-        tags: tagsArray,
-        remindAt: reminderDate ?? undefined,
-        title: title.trim(),
-        userId: user?.id,
-        source: source,
+      await createContentMutation.mutateAsync({
+        content: {
+          url: url.trim(),
+          tags: tagsArray,
+          remindAt: reminderDate ?? undefined,
+          title: title.trim(),
+          userId: user?.id,
+          source: source,
+        },
       });
 
       setUrl("");
       setTags("");
       setTitle("");
       setReminderDate(null);
+
       onContentAdded();
       onClose();
     } catch (err) {
       console.error("Failed to save content:", err);
-    } finally {
-      setIsSaving(false);
     }
   };
 
@@ -205,9 +205,12 @@ export default function AddNewContentModal({
                 <Pressable
                   className="flex-1 px-4 py-3 bg-[#364aca] rounded-lg items-center"
                   onPress={handleSaveContent}
+                  disabled={createContentMutation.isPending || !url.trim()}
                 >
                   <Text className="text-white font-medium">
-                    {isSaving ? "Saving..." : "Save Content"}
+                    {createContentMutation.isPending
+                      ? "Saving..."
+                      : "Save Content"}
                   </Text>
                 </Pressable>
               </View>

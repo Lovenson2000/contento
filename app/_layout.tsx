@@ -6,6 +6,8 @@ import { ShareIntentProvider } from "expo-share-intent";
 import * as Notifications from "expo-notifications";
 import { AuthProvider } from "@/context/AuthContext";
 import { useEffect } from "react";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "@/lib/config/react-query-provider";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -38,23 +40,25 @@ export default function RootLayout() {
   }, [router]);
 
   return (
-    <AuthProvider>
-      <ShareIntentProvider
-        options={{
-          resetOnBackground: true,
-          onResetShareIntent: () =>
-            // used when app going in background and when the reset button is pressed
-            router.replace({
-              pathname: "/",
-            }),
-        }}
-      >
-        <Stack screenOptions={{ header: () => <Header /> }}>
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="+not-found" />
-          <StatusBar style="light" />
-        </Stack>
-      </ShareIntentProvider>
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <ShareIntentProvider
+          options={{
+            resetOnBackground: true,
+            onResetShareIntent: () =>
+              // used when app going in background and when the reset button is pressed
+              router.replace({
+                pathname: "/",
+              }),
+          }}
+        >
+          <Stack screenOptions={{ header: () => <Header /> }}>
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="+not-found" />
+            <StatusBar style="light" />
+          </Stack>
+        </ShareIntentProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }

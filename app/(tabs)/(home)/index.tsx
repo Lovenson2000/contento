@@ -12,7 +12,7 @@ import {
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Entypo from "@expo/vector-icons/Entypo";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SingleContentItem from "@/components/SingleContentItem";
 import ContentsFilters from "@/components/ContentFilters";
 import { socialMediaIcons } from "@/lib/constants/social-icons";
@@ -21,33 +21,31 @@ import { useAuth } from "@/context/AuthContext";
 import AddNewContentModal from "@/components/AddContentModal";
 import EmptySavesScreen from "@/components/screens/EmptySavesScreen";
 import { Content } from "@/lib/types";
-import { fetchUserContents } from "@/lib/api/content";
 import NoContentScreen from "@/components/screens/NoContentScreen";
 import LoadingScreen from "@/components/screens/LoadingScreen";
 import { useRouter } from "expo-router";
 import { useShareIntentContext } from "expo-share-intent";
 import { usePushNotifications } from "@/lib/hooks/usePushNotifications";
+import { useContent } from "@/lib/api/hooks/useContent";
 export default function Index() {
   const [sourceModalVisible, setSourceModalVisible] = useState(false);
   const [showTags, setShowTags] = useState(false);
   const [selectedSource, setSelectedSource] = useState<string | null>(null);
-  const [allContents, setAllContents] = useState<Content[]>([]);
-  const [filteredContents, setFilteredContents] = useState<Content[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddContentModalVisible, setIsAddContentModalVisible] =
     useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [showNoContentScreen, setShowNoContentScreen] = useState(false);
 
   const { schedulePushNotification } = usePushNotifications();
 
   const user = useAuth()?.user;
-
-  const allTags = Array.from(
-    new Set(allContents.flatMap((item) => item.tags ?? []))
-  );
+  const { getUserContents } = useContent();
+  const {
+    data: allContents = [],
+    isLoading,
+    refetch,
+  } = getUserContents(user?.id!);
 
   const handleSourceSelect = (source: string) => {
     setSelectedSource(source);
@@ -71,26 +69,6 @@ export default function Index() {
     setShowFavorites(false);
   };
 
-  const loadUserContents = async () => {
-    if (!user?.id) {
-      setIsLoading(false);
-      return;
-    }
-    try {
-      setIsLoading(true);
-      const contents = await fetchUserContents(user.id);
-      setAllContents(contents);
-    } catch (err) {
-      console.error("Failed to load contents:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadUserContents();
-  }, [user]);
-
   const router = useRouter();
 
   const { hasShareIntent, resetShareIntent } = useShareIntentContext();
@@ -102,7 +80,12 @@ export default function Index() {
     }
   }, [hasShareIntent]);
 
-  useEffect(() => {
+  const allTags = useMemo(
+    () => Array.from(new Set(allContents.flatMap((item) => item.tags ?? []))),
+    [allContents]
+  );
+
+  const filteredContents = useMemo(() => {
     let result = allContents;
 
     if (selectedSource) {
@@ -130,20 +113,14 @@ export default function Index() {
       );
     }
 
-    setFilteredContents(result);
+    return result;
   }, [selectedSource, selectedTags, showFavorites, searchQuery, allContents]);
-  useEffect(() => {
-    if (!isLoading && user && filteredContents.length === 0) {
-      const timer = setTimeout(() => {
-        setShowNoContentScreen(true);
-      }, 500);
-      return () => clearTimeout(timer);
-    } else {
-      setShowNoContentScreen(false);
-    }
-  }, [isLoading, user, filteredContents]);
+
+  const shouldShowNoContentScreen =
+    !isLoading && user && filteredContents.length === 0;
 
   useEffect(() => {
+    if (!allContents.length) return;
     // Schedule notifications for contents with remindAt in the future
     allContents.forEach((content) => {
       if (content.remindAt) {
@@ -153,7 +130,7 @@ export default function Index() {
         }
       }
     });
-  }, [allContents]);
+  }, [allContents, schedulePushNotification]);
 
   if (isLoading) {
     return <LoadingScreen />;
@@ -173,7 +150,7 @@ export default function Index() {
       <AddNewContentModal
         isVisible={isAddContentModalVisible}
         onClose={handleAddContentModalClose}
-        onContentAdded={loadUserContents}
+        onContentAdded={refetch}
       />
       <View className="flex-row items-center border rounded-lg bg-gray-50 border-slate-100 px-2 py-0.5 mb-4">
         <Ionicons name="search" size={20} color="#64748b" className="mr-2" />
@@ -204,7 +181,7 @@ export default function Index() {
 
       <SafeAreaView className="flex-1 w-full">
         {!user && <EmptySavesScreen />}
-        {user && showNoContentScreen ? (
+        {user && shouldShowNoContentScreen ? (
           <NoContentScreen
             onAddContentPress={() => setIsAddContentModalVisible(true)}
           />
@@ -212,12 +189,7 @@ export default function Index() {
           <FlatList
             data={user ? filteredContents : []}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <SingleContentItem
-                content={item}
-                onContentUpdated={loadUserContents}
-              />
-            )}
+            renderItem={({ item }) => <SingleContentItem content={item} />}
             className="flex-1 w-full"
             contentContainerStyle={{ paddingBottom: 20 }}
           />

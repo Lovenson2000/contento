@@ -23,7 +23,7 @@ export const createContent = async (newContent: Partial<Content>) => {
   return data as Content;
 };
 
-export const fetchContentById = async (id: string): Promise<Content | null> => {
+export const fetchContentById = async (id: string): Promise<Content> => {
   if (!id) {
     throw new Error("Invalid Content ID");
   }
@@ -36,7 +36,7 @@ export const fetchContentById = async (id: string): Promise<Content | null> => {
 
   if (error) throw error;
 
-  return data?.[0] ?? null;
+  return data?.[0];
 };
 
 export const updateContent = async (
@@ -59,8 +59,8 @@ export const deleteContent = async (id: string): Promise<void> => {
   if (error) throw error;
 };
 
-export const markAsFavorite = async (id: string): Promise<Content> => {
-  const { data, error } = await supabase
+export const markAsFavorite = async (id: string): Promise<void> => {
+  const { error } = await supabase
     .from("content")
     .update({ isFavorite: true })
     .eq("id", id)
@@ -68,11 +68,10 @@ export const markAsFavorite = async (id: string): Promise<Content> => {
     .single();
 
   if (error) throw error;
-  return data as Content;
 };
 
-export const markNotFavorite = async (id: string): Promise<Content> => {
-  const { data, error } = await supabase
+export const markNotFavorite = async (id: string): Promise<void> => {
+  const { error } = await supabase
     .from("content")
     .update({ isFavorite: false })
     .eq("id", id)
@@ -80,5 +79,4 @@ export const markNotFavorite = async (id: string): Promise<Content> => {
     .single();
 
   if (error) throw error;
-  return data as Content;
 };

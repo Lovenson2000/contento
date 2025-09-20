@@ -1,7 +1,6 @@
+import { LogoImage } from "@/lib/constants/icons";
 import React, { useEffect, useRef } from "react";
 import { Animated, View, StyleSheet } from "react-native";
-
-const LogoImage = require("@/assets/images/full-logo.png");
 
 const LoadingScreen = () => {
   const scaleValue = useRef(new Animated.Value(1)).current;

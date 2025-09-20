@@ -20,7 +20,6 @@ import TagsFilter from "@/components/TagsFilter";
 import { useAuth } from "@/context/AuthContext";
 import AddNewContentModal from "@/components/AddContentModal";
 import EmptySavesScreen from "@/components/screens/EmptySavesScreen";
-import { Content } from "@/lib/types";
 import NoContentScreen from "@/components/screens/NoContentScreen";
 import LoadingScreen from "@/components/screens/LoadingScreen";
 import { useRouter } from "expo-router";

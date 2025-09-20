@@ -1,3 +1,14 @@
+import {
+  FacebookIcon,
+  InstagramIcon,
+  LinkedInIcon,
+  MediumIcon,
+  QuoraIcon,
+  RedditIcon,
+  TiktokIcon,
+  TwitterIcon,
+  YoutubeIcon,
+} from "@/lib/constants/icons";
 import Entypo from "@expo/vector-icons/Entypo";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
@@ -9,15 +20,15 @@ import {
 } from "react-native";
 
 const socialMediaIcons: Record<string, ImageSourcePropType> = {
-  YouTube: require("@/assets/images/youtube.png"),
-  Tiktok: require("@/assets/images/tiktok.png"),
-  Instagram: require("@/assets/images/instagram.png"),
-  Twitter: require("@/assets/images/twitter.png"),
-  Facebook: require("@/assets/images/facebook.png"),
-  Reddit: require("@/assets/images/reddit.png"),
-  LinkedIn: require("@/assets/images/linkedin.png"),
-  Medium: require("@/assets/images/medium.png"),
-  Quora: require("@/assets/images/quora.png"),
+  YouTube: YoutubeIcon,
+  Tiktok: TiktokIcon,
+  Instagram: InstagramIcon,
+  Twitter: TwitterIcon,
+  Facebook: FacebookIcon,
+  Reddit: RedditIcon,
+  LinkedIn: LinkedInIcon,
+  Medium: MediumIcon,
+  Quora: QuoraIcon,
 };
 
 export default function ContentsFilters({

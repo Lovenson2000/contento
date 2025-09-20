@@ -1,3 +1,9 @@
+import {
+  ContactUsIcon,
+  DeleteAccountIcon,
+  LogOutIcon,
+  PrivacyAndPolicyIcon,
+} from "@/lib/constants/icons";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "expo-router";
 import React from "react";
@@ -10,11 +16,6 @@ import {
   ImageSourcePropType,
   Linking,
 } from "react-native";
-
-const DeleteAccountIcon = require("@/assets/images/lock.png");
-const LogOutIcon = require("@/assets/images/log-out.png");
-const ContactUsIcon = require("@/assets/images/envelope.png");
-const PrivacyAndPolicyIcon = require("@/assets/images/shield.png");
 
 export default function SettingsScreen() {
   const router = useRouter();

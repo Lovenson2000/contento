@@ -1,6 +1,5 @@
+import { LogoImage } from "@/lib/constants/icons";
 import { Image, Text, View } from "react-native";
-
-const LogoImage = require("@/assets/images/full-logo.png");
 export default function LogoSection() {
   return (
     <View className="items-center mb-10">

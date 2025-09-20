@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { useRouter } from "expo-router";
 import React from "react";
 import {
   View,
@@ -7,6 +8,7 @@ import {
   ScrollView,
   Image,
   ImageSourcePropType,
+  Linking,
 } from "react-native";
 
 const DeleteAccountIcon = require("@/assets/images/lock.png");
@@ -15,13 +17,19 @@ const ContactUsIcon = require("@/assets/images/envelope.png");
 const PrivacyAndPolicyIcon = require("@/assets/images/shield.png");
 
 export default function SettingsScreen() {
+  const router = useRouter();
   const signout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.error("Error signing out:", error.message);
     } else {
+      router.push("/");
       console.log("Signed out successfully");
     }
+  };
+
+  const openMailClient = () => {
+    Linking.openURL("mailto:beaucicotlovenson@gmail.com");
   };
 
   return (
@@ -36,7 +44,11 @@ export default function SettingsScreen() {
         <SettingsOption iconSource={DeleteAccountIcon} label="Delete Account" />
 
         <SectionHeader title="Support" />
-        <SettingsOption iconSource={ContactUsIcon} label="Contact Us" />
+        <SettingsOption
+          iconSource={ContactUsIcon}
+          label="Contact Us"
+          onPress={openMailClient}
+        />
         <SettingsOption
           iconSource={PrivacyAndPolicyIcon}
           label="Privacy and Policy"

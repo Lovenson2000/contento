@@ -1,12 +1,4 @@
-import {
-  View,
-  ScrollView,
-  Linking,
-  Modal,
-  Text,
-  TouchableOpacity,
-  Pressable,
-} from "react-native";
+import { View, Modal, Text, TouchableOpacity, Pressable } from "react-native";
 
 type ConfirmDeleteAccountModalProps = {
   showDeleteModal: boolean;

@@ -3,6 +3,8 @@ import AddNewContentModal from "@/components/AddContentModal";
 import { useShareIntentContext } from "expo-share-intent";
 import { useRouter } from "expo-router";
 import { View } from "react-native";
+import { extractYoutubeIdFromUrl, getContentSource } from "@/lib/utils/content";
+import { fetchYoutubeVideoDetails } from "@/lib/api/youtube";
 
 export default function ShareScreen() {
   const router = useRouter();
@@ -16,16 +18,35 @@ export default function ShareScreen() {
     useShareIntentContext();
 
   useEffect(() => {
-    if ((hasShareIntent && shareIntent?.webUrl) || shareIntent?.text) {
-      setInitialShareData({
-        title: shareIntent.text?.slice(0, 70) ?? "",
-        url: shareIntent.webUrl ?? "",
-      });
-      setIsModalVisible(true);
-    } else {
-      router.replace("/");
-    }
-  }, []);
+    const handleShareIntent = async () => {
+      if ((hasShareIntent && shareIntent?.webUrl) || shareIntent?.text) {
+        // FOR NOW WE CAN ONLY AUTO FETCH YOUTUBE TITLES
+        const source = getContentSource(shareIntent.webUrl ?? "");
+        if (source?.toLowerCase() === "youtube") {
+          try {
+            const videoId = extractYoutubeIdFromUrl(shareIntent.webUrl ?? "");
+
+            if (videoId) {
+              const data = await fetchYoutubeVideoDetails(videoId);
+              const videoTitle = data.snippet?.title;
+
+              setInitialShareData({
+                title: videoTitle,
+                url: shareIntent.webUrl ?? "",
+              });
+            }
+          } catch (error) {
+            console.error("Failed to fetch YouTube title:", error);
+          }
+        }
+        setIsModalVisible(true);
+      } else {
+        router.replace("/");
+      }
+    };
+
+    handleShareIntent();
+  }, [hasShareIntent, shareIntent, router]);
 
   const handleClose = () => {
     setIsModalVisible(false);

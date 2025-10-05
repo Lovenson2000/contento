@@ -12,9 +12,10 @@ import {
 import { useEffect, useRef, useState } from "react";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useAuth } from "@/context/AuthContext";
-import { getContentSource } from "@/lib/utils/content";
+import { extractYoutubeIdFromUrl, getContentSource } from "@/lib/utils/content";
 import CrossPlatformDateTimePicker from "./DateTimePicker";
 import { useContent } from "@/lib/api/hooks/useContent";
+import { fetchYoutubeVideoDetails } from "@/lib/api/youtube";
 
 type AddNewContentModalProps = {
   isVisible: boolean;
@@ -25,7 +26,6 @@ type AddNewContentModalProps = {
     title?: string;
     url?: string;
     tags?: string[];
-    source?: string;
     remindAt?: Date | null;
   };
 };
@@ -217,8 +217,12 @@ export default function AddNewContentModal({
                     className="border border-slate-200 bg-white rounded-lg p-4 text-slate-900"
                   />
 
+                  {/* Existing Tags Display */}
                   {existingTags.length > 0 && (
                     <View className="mt-3">
+                      <Text className="text-sm text-gray-600 mb-2">
+                        Current Tags:
+                      </Text>
                       <View className="flex-row flex-wrap gap-2">
                         {existingTags.map((tag, index) => (
                           <View

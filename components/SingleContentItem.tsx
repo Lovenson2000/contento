@@ -167,7 +167,6 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
           title: content.title,
           url: content.url,
           id: content.id,
-          source: content.source,
           tags: content.tags,
           remindAt: content.remindAt ? new Date(content.remindAt) : null,
         }}

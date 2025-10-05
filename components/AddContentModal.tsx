@@ -7,6 +7,7 @@ import {
   KeyboardEvent,
   Animated,
   TextInput,
+  ScrollView,
 } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -20,10 +21,15 @@ type AddNewContentModalProps = {
   onClose: () => void;
   onContentAdded: () => void;
   initialData?: {
+    id?: string;
     title?: string;
     url?: string;
+    tags?: string[];
+    source?: string;
+    remindAt?: Date | null;
   };
 };
+
 export default function AddNewContentModal({
   isVisible,
   onClose,
@@ -33,12 +39,17 @@ export default function AddNewContentModal({
   const [title, setTitle] = useState(initialData?.title ?? "");
   const [url, setUrl] = useState(initialData?.url ?? "");
   const [tags, setTags] = useState("");
+  const [existingTags, setExistingTags] = useState<string[]>([]);
   const [showPicker, setShowPicker] = useState(false);
-  const [reminderDate, setReminderDate] = useState<Date | null>(null);
+  const [reminderDate, setReminderDate] = useState<Date | null>(
+    initialData?.remindAt ?? null
+  );
   const modalHeight = useRef(new Animated.Value(0.7)).current;
 
   const user = useAuth()?.user;
-  const { createContentMutation } = useContent();
+  const { createContentMutation, updateContentMutation } = useContent();
+
+  const isEditMode = !!initialData?.id;
 
   useEffect(() => {
     const keyboardShow = Keyboard.addListener(
@@ -72,31 +83,51 @@ export default function AddNewContentModal({
     }).start();
   };
 
+  const handleRemoveTag = (tagToRemove: string) => {
+    setExistingTags((prev) => prev.filter((tag) => tag !== tagToRemove));
+  };
+
   const handleSaveContent = async () => {
     if (!url.trim()) return;
 
     try {
-      const tagsArray = tags
+      const newTagsArray = tags
         .split(",")
         .map((tag) => tag.trim())
         .filter((tag) => tag !== "");
 
+      const allTags = [...existingTags, ...newTagsArray];
+
       const source = getContentSource(url.trim());
 
-      await createContentMutation.mutateAsync({
-        content: {
-          url: url.trim(),
-          tags: tagsArray,
-          remindAt: reminderDate ?? undefined,
-          title: title.trim(),
-          userId: user?.id,
-          source: source,
-        },
-      });
+      if (isEditMode && initialData?.id) {
+        await updateContentMutation.mutateAsync({
+          id: initialData.id,
+          content: {
+            url: url.trim(),
+            tags: allTags,
+            remindAt: reminderDate ?? undefined,
+            title: title.trim(),
+            source: source,
+          },
+        });
+      } else {
+        await createContentMutation.mutateAsync({
+          content: {
+            url: url.trim(),
+            tags: allTags,
+            remindAt: reminderDate ?? undefined,
+            title: title.trim(),
+            userId: user?.id,
+            source: source,
+          },
+        });
+      }
 
       setUrl("");
       setTags("");
       setTitle("");
+      setExistingTags([]);
       setReminderDate(null);
 
       onContentAdded();
@@ -110,8 +141,13 @@ export default function AddNewContentModal({
     if (initialData) {
       setTitle(initialData.title ?? "");
       setUrl(initialData.url ?? "");
+      setExistingTags(initialData.tags ?? []);
+      setTags("");
+      setReminderDate(initialData.remindAt ?? null);
+    } else {
+      setExistingTags([]);
     }
-  }, [initialData]);
+  }, [initialData, isVisible]);
 
   return (
     <View>
@@ -126,95 +162,129 @@ export default function AddNewContentModal({
             }}
             className="w-full bg-white p-4 rounded-t-2xl"
           >
-            <View className="w-full h-1/2 bg-white p-4 rounded-t-2xl">
-              <View className="rounded-t-xl text-center relative">
-                <Pressable onPress={onClose} className="absolute top-0 right-0">
-                  <MaterialCommunityIcons
-                    name="close"
-                    color="#051542"
-                    size={24}
+            <ScrollView className="flex-1">
+              <View className="w-full bg-white p-4 rounded-t-2xl">
+                <View className="rounded-t-xl text-center relative">
+                  <Pressable
+                    onPress={onClose}
+                    className="absolute top-0 right-0 z-10"
+                  >
+                    <MaterialCommunityIcons
+                      name="close"
+                      color="#051542"
+                      size={24}
+                    />
+                  </Pressable>
+                  <Text className="text-center text-2xl my-8">
+                    {isEditMode ? "Edit Content" : "Add New Content"}
+                  </Text>
+                </View>
+                <View className="mt-6">
+                  <Text className="text-[##051542] text-xl font-medium mb-1">
+                    URL
+                  </Text>
+                  <TextInput
+                    onChangeText={setUrl}
+                    value={url}
+                    placeholder="e.g https://www.contento.dev/"
+                    placeholderTextColor="#535c73"
+                    className="border border-slate-200 bg-white rounded-lg p-4 text-slate-900"
                   />
-                </Pressable>
-                <Text className="text-center text-2xl my-8">
-                  Add New Content
-                </Text>
-              </View>
-              <View className="mt-6">
-                <Text className="text-[##051542] text-xl font-medium mb-1">
-                  URL
-                </Text>
-                <TextInput
-                  onChangeText={setUrl}
-                  value={url}
-                  placeholder="e.g https://www.contento.dev/"
-                  placeholderTextColor="#535c73"
-                  className="border border-slate-200 bg-white rounded-lg p-4 text-slate-900"
-                />
-              </View>
+                </View>
 
-              <View className="mt-4">
-                <Text className="text-[#051542] text-xl font-medium mb-1">
-                  Title (optional)
-                </Text>
-                <TextInput
-                  onChangeText={setTitle}
-                  value={title}
-                  placeholder="e.g How I learned English"
-                  placeholderTextColor="#535c73"
-                  className="border border-slate-200 bg-white rounded-lg p-4 text-slate-900"
-                />
-              </View>
-
-              <View className="mt-4">
-                <Text className="text-[##051542] text-xl font-medium mb-1">
-                  Tags (optional)
-                </Text>
-                <TextInput
-                  onChangeText={setTags}
-                  value={tags}
-                  placeholder="e.g education, news, science"
-                  placeholderTextColor="#535c73"
-                  className="border border-slate-200 bg-white rounded-lg p-4 text-slate-900"
-                />
-              </View>
-
-              {/* Reminder */}
-              <View className="mt-6">
-                <Pressable onPress={() => setShowPicker(true)}>
-                  <Text className="text-[#364aca] font-medium">
-                    {reminderDate
-                      ? `Reminder: ${reminderDate.toLocaleString()}`
-                      : "Add Reminder"}
+                <View className="mt-4">
+                  <Text className="text-[#051542] text-xl font-medium mb-1">
+                    Title (optional)
                   </Text>
-                </Pressable>
-                <CrossPlatformDateTimePicker
-                  value={reminderDate || new Date()}
-                  visible={showPicker}
-                  onChange={(date) => setReminderDate(date)}
-                  onDismiss={() => setShowPicker(false)}
-                />
-              </View>
+                  <TextInput
+                    onChangeText={setTitle}
+                    value={title}
+                    placeholder="e.g How I learned English"
+                    placeholderTextColor="#535c73"
+                    className="border border-slate-200 bg-white rounded-lg p-4 text-slate-900"
+                  />
+                </View>
 
-              <View className="flex-row gap-x-4 mt-6">
-                <Pressable
-                  onPress={onClose}
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 items-center"
-                >
-                  <Text className="text-gray-700 font-medium">Cancel</Text>
-                </Pressable>
-                <Pressable
-                  className="flex-1 px-4 py-3 bg-[#364aca] rounded-lg items-center"
-                  onPress={handleSaveContent}
-                  disabled={createContentMutation.isPending || !url.trim()}
-                >
-                  <Text className="text-white font-medium">
-                    {createContentMutation.isPending
-                      ? "Saving..."
-                      : "Save Content"}
+                <View className="mt-4">
+                  <Text className="text-[##051542] text-xl font-medium mb-1">
+                    Tags (optional)
                   </Text>
-                </Pressable>
+                  <TextInput
+                    onChangeText={setTags}
+                    value={tags}
+                    placeholder="e.g education, news, science"
+                    placeholderTextColor="#535c73"
+                    className="border border-slate-200 bg-white rounded-lg p-4 text-slate-900"
+                  />
+
+                  {existingTags.length > 0 && (
+                    <View className="mt-3">
+                      <View className="flex-row flex-wrap gap-2">
+                        {existingTags.map((tag, index) => (
+                          <View
+                            key={index}
+                            className="flex-row items-center bg-blue-100 px-3 py-2 rounded-full"
+                          >
+                            <Text className="text-blue-700 mr-2">{tag}</Text>
+                            <Pressable onPress={() => handleRemoveTag(tag)}>
+                              <MaterialCommunityIcons
+                                name="close-circle"
+                                size={16}
+                                color="#1d4ed8"
+                              />
+                            </Pressable>
+                          </View>
+                        ))}
+                      </View>
+                    </View>
+                  )}
+                </View>
+
+                {/* Reminder */}
+                <View className="mt-6">
+                  <Pressable onPress={() => setShowPicker(true)}>
+                    <Text className="text-[#364aca] font-medium">
+                      {reminderDate
+                        ? `Reminder: ${reminderDate.toLocaleString()}`
+                        : "Add Reminder"}
+                    </Text>
+                  </Pressable>
+                  <CrossPlatformDateTimePicker
+                    value={reminderDate || new Date()}
+                    visible={showPicker}
+                    onChange={(date) => setReminderDate(date)}
+                    onDismiss={() => setShowPicker(false)}
+                  />
+                </View>
+
+                <View className="flex-row gap-x-4 mt-6 mb-4">
+                  <Pressable
+                    onPress={onClose}
+                    className="flex-1 px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 items-center"
+                  >
+                    <Text className="text-gray-700 font-medium">Cancel</Text>
+                  </Pressable>
+                  <Pressable
+                    className="flex-1 px-4 py-3 bg-[#364aca] rounded-lg items-center"
+                    onPress={handleSaveContent}
+                    disabled={
+                      createContentMutation.isPending ||
+                      updateContentMutation?.isPending ||
+                      !url.trim()
+                    }
+                  >
+                    <Text className="text-white font-medium">
+                      {createContentMutation.isPending ||
+                      updateContentMutation?.isPending
+                        ? "Saving..."
+                        : isEditMode
+                        ? "Update Content"
+                        : "Save Content"}
+                    </Text>
+                  </Pressable>
+                </View>
               </View>
-            </View>
+            </ScrollView>
           </Animated.View>
         </View>
       </Modal>

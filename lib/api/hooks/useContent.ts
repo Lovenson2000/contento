@@ -40,6 +40,18 @@ export const useContent = () => {
     },
   });
 
+  const updateContentMutation = useMutation({
+    mutationFn: ({ id, content }: { id: string; content: Partial<Content> }) =>
+      updateContent(id, content),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["contents"] });
+      queryClient.invalidateQueries({ queryKey: ["content", variables.id] });
+    },
+    onError: (error) => {
+      console.error("Error updating content:", error);
+    },
+  });
+
   const updateContentReminderDate = useMutation({
     mutationFn: ({
       contentId,
@@ -111,6 +123,7 @@ export const useContent = () => {
     getContentById,
     createContentMutation,
     deleteContentMutation,
+    updateContentMutation,
     markContentAsFavorite,
     removeContentFromFavorites,
     updateContentReminderDate,

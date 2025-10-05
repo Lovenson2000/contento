@@ -10,6 +10,7 @@ import { useRouter } from "expo-router";
 import SingleContentMenuModal from "./SingleContentMenuModal";
 import CrossPlatformDateTimePicker from "./DateTimePicker";
 import { useContent } from "@/lib/api/hooks/useContent";
+import AddNewContentModal from "./AddContentModal";
 
 type SingleContentItemProps = {
   content: Content;
@@ -19,6 +20,7 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [dateValue, setDateValue] = useState(new Date());
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
 
   const {
     deleteContentMutation,
@@ -80,6 +82,15 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
     }
   };
 
+  const handleEditContent = () => {
+    setMenuVisible(false);
+    setIsEditModalVisible(true);
+  };
+
+  const handleContentUpdated = () => {
+    setIsEditModalVisible(false);
+  };
+
   return (
     <>
       <TouchableOpacity
@@ -135,10 +146,7 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
         visible={menuVisible}
         onClose={() => setMenuVisible(false)}
         onDelete={handleDeleteContent}
-        onEdit={() => {
-          setMenuVisible(false);
-          alert("Edit clicked");
-        }}
+        onEdit={handleEditContent}
         onAddToFavorites={handleMarkAsFavorite}
         onRemoveFromFavorites={handleRemoveFromFavorites}
         isFavorite={content.isFavorite}
@@ -150,6 +158,19 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
         visible={isDatePickerVisible}
         onChange={handleUpdateContentReminderDate}
         onDismiss={() => setIsDatePickerVisible(false)}
+      />
+      <AddNewContentModal
+        isVisible={isEditModalVisible}
+        onClose={() => setIsEditModalVisible(false)}
+        onContentAdded={handleContentUpdated}
+        initialData={{
+          title: content.title,
+          url: content.url,
+          id: content.id,
+          source: content.source,
+          tags: content.tags,
+          remindAt: content.remindAt ? new Date(content.remindAt) : null,
+        }}
       />
     </>
   );

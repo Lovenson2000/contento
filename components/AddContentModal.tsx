@@ -9,13 +9,12 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useAuth } from "@/context/AuthContext";
-import { extractYoutubeIdFromUrl, getContentSource } from "@/lib/utils/content";
+import { getContentSource } from "@/lib/utils/content";
 import CrossPlatformDateTimePicker from "./DateTimePicker";
 import { useContent } from "@/lib/api/hooks/useContent";
-import { fetchYoutubeVideoDetails } from "@/lib/api/youtube";
 
 type AddNewContentModalProps = {
   isVisible: boolean;
@@ -51,6 +50,25 @@ export default function AddNewContentModal({
 
   const isEditMode = !!initialData?.id;
 
+  const _keyboardDidShow = useCallback(
+    (e: KeyboardEvent) => {
+      Animated.timing(modalHeight, {
+        toValue: 0.85,
+        duration: 250,
+        useNativeDriver: false,
+      }).start();
+    },
+    [modalHeight]
+  );
+
+  const _keyboardDidHide = useCallback(() => {
+    Animated.timing(modalHeight, {
+      toValue: 0.7,
+      duration: 250,
+      useNativeDriver: false,
+    }).start();
+  }, [modalHeight]);
+
   useEffect(() => {
     const keyboardShow = Keyboard.addListener(
       "keyboardDidShow",
@@ -65,23 +83,7 @@ export default function AddNewContentModal({
       keyboardShow.remove();
       keyboardHide.remove();
     };
-  }, []);
-
-  const _keyboardDidShow = (e: KeyboardEvent) => {
-    Animated.timing(modalHeight, {
-      toValue: 0.85,
-      duration: 250,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const _keyboardDidHide = () => {
-    Animated.timing(modalHeight, {
-      toValue: 0.7,
-      duration: 250,
-      useNativeDriver: false,
-    }).start();
-  };
+  }, [_keyboardDidShow, _keyboardDidHide]);
 
   const handleRemoveTag = (tagToRemove: string) => {
     setExistingTags((prev) => prev.filter((tag) => tag !== tagToRemove));

@@ -20,25 +20,37 @@ export default function ShareScreen() {
   useEffect(() => {
     const handleShareIntent = async () => {
       if ((hasShareIntent && shareIntent?.webUrl) || shareIntent?.text) {
-        // FOR NOW WE CAN ONLY AUTO FETCH YOUTUBE TITLES
-        const source = getContentSource(shareIntent.webUrl ?? "");
+        const url = shareIntent.webUrl ?? "";
+        const source = getContentSource(url);
+
         if (source?.toLowerCase() === "youtube") {
           try {
-            const videoId = extractYoutubeIdFromUrl(shareIntent.webUrl ?? "");
-
+            const videoId = extractYoutubeIdFromUrl(url);
             if (videoId) {
               const data = await fetchYoutubeVideoDetails(videoId);
               const videoTitle = data.snippet?.title;
 
               setInitialShareData({
-                title: videoTitle,
-                url: shareIntent.webUrl ?? "",
+                title: videoTitle ?? "",
+                url,
               });
             }
           } catch (error) {
             console.error("Failed to fetch YouTube title:", error);
+            setInitialShareData({ title: "", url });
           }
+        } else {
+          const textTitle =
+            shareIntent.text && shareIntent.text !== url
+              ? shareIntent.text
+              : "";
+
+          setInitialShareData({
+            title: textTitle,
+            url,
+          });
         }
+
         setIsModalVisible(true);
       } else {
         router.replace("/");

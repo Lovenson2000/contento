@@ -80,7 +80,7 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         run: |
           echo "🧰 Validating EAS configuration..."
-          npx eas build:configure --non-interactive
+          npx eas build:configure
 
       # ----------------------------
       # ✅ Step 9: Android build (dry-run)

@@ -63,7 +63,7 @@ jobs:
           npx eas whoami || echo "Expo token authentication complete ✅"
 
       # ----------------------------
-      # 🧱 Step 7: Verify Expo prebuild
+      # 🧱 Step 7: Verify Expo Prebuild
       # ----------------------------
       - name: 🧱 Verify Expo Prebuild
         env:
@@ -73,17 +73,7 @@ jobs:
           npx expo prebuild --non-interactive --no-install
 
       # ----------------------------
-      # 📋 Step 8: Check EAS configuration
-      # ----------------------------
-      - name: 📋 Check EAS build configuration
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
-        run: |
-          echo "🧰 Validating EAS configuration..."
-          npx eas build:configure
-
-      # ----------------------------
-      # ✅ Step 9: Android build (dry-run)
+      # ✅ Step 8: Android build (dry-run)
       # ----------------------------
       - name: ✅ Android Build (Dry Run)
         env:
@@ -93,7 +83,7 @@ jobs:
           npx eas build --platform android --non-interactive --skip-credentials-check --dry-run
 
       # ----------------------------
-      # ✅ Step 10: iOS build (dry-run)
+      # ✅ Step 9: iOS build (dry-run)
       # ----------------------------
       - name: ✅ iOS Build (Dry Run)
         env:

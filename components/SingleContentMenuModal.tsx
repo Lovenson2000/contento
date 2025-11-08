@@ -102,7 +102,13 @@ export default function SingleContentMenuModal({
               isFavorite ? onRemoveFromFavorites() : onAddToFavorites();
               onClose();
             }}
-            icon={<AntDesign name="staro" size={18} color="#334155" />}
+            icon={
+              isFavorite ? (
+                <AntDesign name="star" size={18} color="#334155" />
+              ) : (
+                <AntDesign name="staro" size={18} color="#334155" />
+              )
+            }
           />
 
           <SingleMenuItem

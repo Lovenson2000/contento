@@ -24,25 +24,28 @@ jobs:
           npm ci
 
       - name: 🧪 Lint Check
-        run: |
-          npm run lint
+        run: npm run lint
 
       - name: 🔐 Authenticate with Expo
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         run: |
-          echo "🔑 Logging into Expo..."
-          npx eas whoami
+          echo "🔑 Authenticating with Expo using token..."
+          npx eas whoami || npx eas login --non-interactive
 
       - name: 🏗️ Build Android (Local Dry Run)
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         run: |
           echo "📱 Checking Android build..."
-          npx eas build --platform android --local --skip-credentials-check
+          npx eas build --platform android --non-interactive --local --skip-credentials-check
 
       - name: 🍏 Build iOS (Local Dry Run)
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         run: |
           echo "🍎 Checking iOS build..."
-          npx eas build --platform ios --local --skip-credentials-check
+          npx eas build --platform ios --non-interactive --local --skip-credentials-check
 
       - name: 🧹 Clean up
         if: always()

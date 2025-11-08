@@ -80,7 +80,7 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         run: |
           echo "📱 Performing Android build..."
-          npx eas build --platform android --non-interactive --skip-credentials-check
+          npx eas build --platform android --local --non-interactive
 
       # ----------------------------
       # ✅ Step 9: iOS build
@@ -90,4 +90,4 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         run: |
           echo "🍏 Performing iOS build..."
-          npx eas build --platform ios --non-interactive --skip-credentials-check
+          npx eas build --platform ios --local --non-interactive

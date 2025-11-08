@@ -12,7 +12,7 @@ export default function NoContentScreen({
     <View className="h-3/4 justify-center items-center px-">
       <Image source={ContentImage} className="w-60 h-60" resizeMode="contain" />
       <Text className="text-lg font-medium text-center text-gray-800 my-4 px-6">
-        Start saving content you love by just adding a URL
+        Save content you love by just adding a URL
       </Text>
 
       <TouchableOpacity

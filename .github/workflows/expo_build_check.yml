@@ -2,7 +2,7 @@ name: Expo PR Build Check
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -23,10 +23,9 @@ jobs:
           npm install -g eas-cli
           npm ci
 
-      - name: 🧪 Lint and Type Check
+      - name: 🧪 Lint Check
         run: |
-          npm run lint --if-present
-          npm run type-check --if-present
+          npm run lint
 
       - name: 🔐 Authenticate with Expo
         env:

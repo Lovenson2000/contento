@@ -1,4 +1,4 @@
-name: Expo PR Build Check
+name: Expo Build Check
 
 on:
   pull_request:
@@ -23,26 +23,27 @@ jobs:
           npm install -g eas-cli
           npm ci
 
-      - name: 🧪 Lint Check
+      - name: 🧪 Lint and Type Check
         run: |
           npm run lint
+          npm run type-check
 
       - name: 🔐 Authenticate with Expo
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         run: |
           echo "🔑 Logging into Expo..."
-          npx eas whoami || npx eas login --token $EXPO_ACCESS_TOKEN
+          npx eas whoami
 
       - name: 🏗️ Build Android (Local Dry Run)
         run: |
           echo "📱 Checking Android build..."
-          npx eas build --platform android --local --skip-credentials-check
+          npx eas build --platform android --local --non-interactive
 
       - name: 🍏 Build iOS (Local Dry Run)
         run: |
           echo "🍎 Checking iOS build..."
-          npx eas build --platform ios --local --skip-credentials-check
+          npx eas build --platform ios --local --non-interactive
 
       - name: 🧹 Clean up
         if: always()

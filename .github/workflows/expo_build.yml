@@ -1,0 +1,50 @@
+name: Expo Build Check
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: 🧱 Verify App Build (Android & iOS)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧩 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 📦 Install dependencies
+        run: |
+          npm install -g eas-cli
+          npm ci
+
+      - name: 🧪 Lint and Type Check
+        run: |
+          npm run lint
+          npm run type-check
+
+      - name: 🔐 Authenticate with Expo
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
+        run: |
+          echo "🔑 Logging into Expo..."
+          npx eas whoami
+
+      - name: 🏗️ Build Android (Local Dry Run)
+        run: |
+          echo "📱 Checking Android build..."
+          npx eas build --platform android --local --non-interactive
+
+      - name: 🍏 Build iOS (Local Dry Run)
+        run: |
+          echo "🍎 Checking iOS build..."
+          npx eas build --platform ios --local --non-interactive
+
+      - name: 🧹 Clean up
+        if: always()
+        run: rm -rf android ios

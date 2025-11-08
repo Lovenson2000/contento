@@ -73,21 +73,21 @@ jobs:
           npx expo prebuild --non-interactive --no-install
 
       # ----------------------------
-      # ✅ Step 8: Android build (dry-run)
+      # ✅ Step 8: Android build
       # ----------------------------
-      - name: ✅ Android Build (Dry Run)
+      - name: Android Build
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         run: |
-          echo "📱 Performing Android dry-run build..."
-          npx eas build --platform android --non-interactive --skip-credentials-check --dry-run
+          echo "📱 Performing Android build..."
+          npx eas build --platform android --non-interactive --skip-credentials-check
 
       # ----------------------------
-      # ✅ Step 9: iOS build (dry-run)
+      # ✅ Step 9: iOS build
       # ----------------------------
-      - name: ✅ iOS Build (Dry Run)
+      - name: iOS Build
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         run: |
-          echo "🍏 Performing iOS dry-run build..."
-          npx eas build --platform ios --non-interactive --skip-credentials-check --dry-run
+          echo "🍏 Performing iOS build..."
+          npx eas build --platform ios --non-interactive --skip-credentials-check

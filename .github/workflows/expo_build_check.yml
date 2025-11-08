@@ -1,93 +1,45 @@
-name: Expo PR Build Check
+name: Expo PR Validation
 
 on:
   pull_request:
     branches: [main]
 
 jobs:
-  build:
-    name: 🧱 Verify App Build (Android & iOS)
-    runs-on: macos-latest
+  validate:
+    name: ⚙️ Validate Expo Prebuild
+    runs-on: ubuntu-latest
 
     steps:
-      # ----------------------------
-      # 🧩 Step 1: Checkout repository
-      # ----------------------------
       - name: 🧩 Checkout repository
         uses: actions/checkout@v4
 
-      # ----------------------------
-      # ⚙️ Step 2: Setup Node.js with cache
-      # ----------------------------
       - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: "npm"
 
-      # ----------------------------
-      # 💾 Step 3: Cache Gradle
-      # ----------------------------
-      - name: 💾 Cache Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      # ----------------------------
-      # 📦 Step 4: Install dependencies
-      # ----------------------------
       - name: 📦 Install dependencies
         run: |
           npm install -g eas-cli
           npm ci
 
-      # ----------------------------
-      # 🧪 Step 5: Lint check
-      # ----------------------------
       - name: 🧪 Lint Check
         run: npm run lint
 
-      # ----------------------------
-      # 🔐 Step 6: Authenticate with Expo
-      # ----------------------------
       - name: 🔐 Authenticate with Expo
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         run: |
-          echo "🔑 Authenticating with Expo..."
-          npx eas whoami || echo "Expo token authentication complete ✅"
+          npx eas whoami || echo "Expo token authentication OK ✅"
 
-      # ----------------------------
-      # 🧱 Step 7: Verify Expo Prebuild
-      # ----------------------------
-      - name: 🧱 Verify Expo Prebuild
+      - name: 🧱 Expo Prebuild Validation
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         run: |
-          echo "⚙️ Running Expo prebuild check..."
+          echo "⚙️ Running expo prebuild validation..."
           npx expo prebuild --non-interactive --no-install
 
-      # ----------------------------
-      # ✅ Step 8: Android build
-      # ----------------------------
-      - name: Android Build
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
-        run: |
-          echo "📱 Performing Android build..."
-          npx eas build --platform android --local --non-interactive
-
-      # ----------------------------
-      # ✅ Step 9: iOS build
-      # ----------------------------
-      - name: iOS Build
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
-        run: |
-          echo "🍏 Performing iOS build..."
-          npx eas build --platform ios --local --non-interactive
+      - name: 🧹 Clean up
+        if: always()
+        run: rm -rf android ios

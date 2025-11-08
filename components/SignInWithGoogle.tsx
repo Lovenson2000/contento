@@ -5,7 +5,7 @@ import {
   SignInResponse,
 } from "@react-native-google-signin/google-signin";
 import { supabase } from "@/lib/supabase";
-import { Pressable, StyleSheet, Text, Image } from "react-native";
+import { Pressable, Text, Image } from "react-native";
 import { useRouter } from "expo-router";
 const GoogleIcon = require("@/assets/images/google.png");
 
@@ -32,7 +32,7 @@ export default function SignInWithGoogle() {
 
       if (isSignInResponse(userInfo)) {
         if (userInfo?.data?.idToken) {
-          const { data, error } = await supabase.auth.signInWithIdToken({
+          const { error } = await supabase.auth.signInWithIdToken({
             provider: "google",
             token: userInfo.data.idToken,
           });

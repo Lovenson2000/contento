@@ -54,6 +54,14 @@ export default function SingleContentMenuModal({
       onClose();
     }
   };
+  const handleFavoriteToggle = async () => {
+    if (isFavorite) {
+      onRemoveFromFavorites();
+    } else {
+      onAddToFavorites();
+    }
+    onClose();
+  };
 
   return (
     <Modal
@@ -98,10 +106,7 @@ export default function SingleContentMenuModal({
 
           <SingleMenuItem
             label={isFavorite ? "Mark Not Favorite" : "Add To Favorites"}
-            onPress={() => {
-              isFavorite ? onRemoveFromFavorites() : onAddToFavorites();
-              onClose();
-            }}
+            onPress={handleFavoriteToggle}
             icon={
               isFavorite ? (
                 <AntDesign name="star" size={18} color="#334155" />

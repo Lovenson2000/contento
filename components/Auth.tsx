@@ -40,22 +40,6 @@ export default function Auth() {
     setLoading(false);
   }
 
-  async function signUpWithEmail() {
-    setLoading(true);
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
-
-    if (error) Alert.alert(error.message);
-    if (!session)
-      Alert.alert("Please check your inbox for email verification!");
-    setLoading(false);
-  }
-
   return (
     <View style={styles.container}>
       <Input
@@ -87,7 +71,7 @@ export default function Auth() {
 
       <SignInWithGoogle />
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Don't have an account?</Text>
+        <Text style={styles.footerText}>Don&apos;t have an account?</Text>
         <TouchableOpacity>
           <Text style={styles.signUpText}> Sign Up</Text>
         </TouchableOpacity>
@@ -95,6 +79,8 @@ export default function Auth() {
     </View>
   );
 }
+
+// TODO: Migrate these styles to Tailwind CSS
 const styles = StyleSheet.create({
   container: {
     marginTop: 60,

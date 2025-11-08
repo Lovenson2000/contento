@@ -71,13 +71,14 @@ export default function Index() {
   const router = useRouter();
 
   const { hasShareIntent, resetShareIntent } = useShareIntentContext();
+
   useEffect(() => {
     if (hasShareIntent) {
       router.navigate({
         pathname: "/share",
       });
     }
-  }, [hasShareIntent]);
+  }, [hasShareIntent, router]);
 
   const allTags = useMemo(
     () => Array.from(new Set(allContents.flatMap((item) => item.tags ?? []))),

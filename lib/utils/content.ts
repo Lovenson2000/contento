@@ -25,7 +25,8 @@ export function getContentSource(source: string): string {
   if (source.startsWith(quoraBaseUrl)) return "quora";
   if (source.startsWith(linkedinBaseUrl)) return "linkedin";
   if (source.startsWith(facebookBaseUrl)) return "facebook";
-  if (source.startsWith(mediumBaseUrl)) return "medium";
+  if (source.startsWith(mediumBaseUrl) || source.includes("medium.com"))
+    return "medium";
   if (source.startsWith(blueskyBaseUrl)) return "bluesky";
   return "unknown";
 }

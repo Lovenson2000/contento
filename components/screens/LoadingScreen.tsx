@@ -35,7 +35,7 @@ const LoadingScreen = () => {
         ]),
       ])
     ).start();
-  }, []);
+  }, [opacityValue, scaleValue]);
 
   return (
     <View style={styles.container}>

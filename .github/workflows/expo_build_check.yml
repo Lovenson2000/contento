@@ -10,22 +10,51 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # ----------------------------
+      # 🧩 Step 1: Checkout repository
+      # ----------------------------
       - name: 🧩 Checkout repository
         uses: actions/checkout@v4
 
+      # ----------------------------
+      # ⚙️ Step 2: Setup Node.js
+      # ----------------------------
       - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: "npm"
 
+      # ----------------------------
+      # 💾 Step 3: Cache Gradle (for faster dry-run)
+      # ----------------------------
+      - name: 💾 Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # ----------------------------
+      # 📦 Step 4: Install dependencies
+      # ----------------------------
       - name: 📦 Install dependencies
         run: |
           npm install -g eas-cli
           npm ci
 
+      # ----------------------------
+      # 🧪 Step 5: Lint check
+      # ----------------------------
       - name: 🧪 Lint Check
         run: npm run lint
 
+      # ----------------------------
+      # 🔐 Step 6: Authenticate with Expo
+      # ----------------------------
       - name: 🔐 Authenticate with Expo
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
@@ -33,20 +62,38 @@ jobs:
           echo "🔑 Authenticating with Expo using token..."
           npx eas whoami || npx eas login --non-interactive
 
-      - name: 🏗️ Build Android (Local Dry Run)
+      # ----------------------------
+      # 🧱 Step 7: Verify project setup
+      # ----------------------------
+      - name: 🧱 Verify Expo Prebuild
+        run: |
+          echo "⚙️ Running Expo prebuild check..."
+          npx expo prebuild --non-interactive --no-install
+
+      # ----------------------------
+      # 📋 Step 8: Check EAS config validity
+      # ----------------------------
+      - name: 📋 Check EAS build configuration
+        run: |
+          echo "🧰 Validating EAS configuration..."
+          npx eas build:configure
+
+      # ----------------------------
+      # ✅ Step 9: Android dry-run build
+      # ----------------------------
+      - name: ✅ Android Build (Dry Run)
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         run: |
-          echo "📱 Checking Android build..."
-          npx eas build --platform android --non-interactive --local --skip-credentials-check
+          echo "📱 Performing Android dry-run build..."
+          npx eas build --platform android --non-interactive --skip-credentials-check --dry-run
 
-      - name: 🍏 Build iOS (Local Dry Run)
+      # ----------------------------
+      # ✅ Step 10: iOS dry-run build
+      # ----------------------------
+      - name: ✅ iOS Build (Dry Run)
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         run: |
-          echo "🍎 Checking iOS build..."
-          npx eas build --platform ios --non-interactive --local --skip-credentials-check
-
-      - name: 🧹 Clean up
-        if: always()
-        run: rm -rf android ios
+          echo "🍏 Performing iOS dry-run build..."
+          npx eas build --platform ios --non-interactive --skip-credentials-check --dry-run

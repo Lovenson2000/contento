@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     name: 🧱 Verify App Build (Android & iOS)
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       # ----------------------------

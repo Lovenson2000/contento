@@ -32,7 +32,7 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         run: |
           echo "🔑 Logging into Expo..."
-          npx eas whoami || npx eas login --token $EXPO_ACCESS_TOKEN
+          npx eas whoami
 
       - name: 🏗️ Build Android (Local Dry Run)
         run: |

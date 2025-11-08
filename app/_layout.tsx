@@ -55,8 +55,8 @@ export default function RootLayout() {
           <Stack screenOptions={{ header: () => <Header /> }}>
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="+not-found" />
-            <StatusBar style="light" />
           </Stack>
+          <StatusBar style="light" />
         </ShareIntentProvider>
       </AuthProvider>
     </QueryClientProvider>

@@ -68,7 +68,7 @@ export default function LoginScreen() {
 
         <SignInWithGoogle />
         <View className="flex-row justify-center mt-8">
-          <Text className="text-gray-500">Don't have an account?</Text>
+          <Text className="text-gray-500">Don&apos;t have an account?</Text>
           <TouchableOpacity onPress={() => router.push("/signup")}>
             <Text className="text-blue-500 font-medium"> Sign Up</Text>
           </TouchableOpacity>

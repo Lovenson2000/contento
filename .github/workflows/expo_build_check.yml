@@ -23,7 +23,6 @@ jobs:
         run: |
           npm install -g eas-cli
           npm ci
-
       - name: 🧪 Lint Check
         run: npm run lint
 
@@ -32,14 +31,12 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         run: |
           npx eas whoami || echo "Expo token authentication OK ✅"
-
       - name: 🧱 Expo Prebuild Validation
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         run: |
           echo "⚙️ Running expo prebuild validation..."
           npx expo prebuild --non-interactive --no-install
-
       - name: 🧹 Clean up
         if: always()
         run: rm -rf android ios

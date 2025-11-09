@@ -8,6 +8,8 @@ import { AuthProvider } from "@/context/AuthContext";
 import { useEffect } from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/config/react-query-provider";
+import { OnboardingProvider, useOnboarding } from "@/context/OnboardingContext";
+import LoadingScreen from "@/components/screens/LoadingScreen";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -18,6 +20,29 @@ Notifications.setNotificationHandler({
     shouldShowAlert: true,
   }),
 });
+
+function RootNavigator() {
+  const { hasSeenOnboarding } = useOnboarding();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (hasSeenOnboarding === false) {
+      router.replace("/onboarding");
+    }
+  }, [hasSeenOnboarding, router]);
+
+  if (hasSeenOnboarding === null) {
+    return <LoadingScreen />;
+  }
+
+  return (
+    <Stack screenOptions={{ header: () => <Header /> }}>
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="+not-found" />
+      <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+    </Stack>
+  );
+}
 
 export default function RootLayout() {
   const router = useRouter();
@@ -35,29 +60,23 @@ export default function RootLayout() {
         }
       }
     );
-
     return () => subscription.remove();
   }, [router]);
 
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <ShareIntentProvider
-          options={{
-            resetOnBackground: true,
-            onResetShareIntent: () =>
-              // used when app going in background and when the reset button is pressed
-              router.replace({
-                pathname: "/",
-              }),
-          }}
-        >
-          <Stack screenOptions={{ header: () => <Header /> }}>
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-          <StatusBar style="light" />
-        </ShareIntentProvider>
+        <OnboardingProvider>
+          <ShareIntentProvider
+            options={{
+              resetOnBackground: true,
+              onResetShareIntent: () => router.replace("/"),
+            }}
+          >
+            <RootNavigator />
+            <StatusBar style="light" />
+          </ShareIntentProvider>
+        </OnboardingProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

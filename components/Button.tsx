@@ -20,8 +20,8 @@ export default function Button({
 }: ButtonProps) {
   return (
     <TouchableOpacity
-      className={`py-3 px-4 rounded-lg items-center justify-center ${
-        disabled ? "bg-gray-400" : "bg-blue-500"
+      className={`p-4 rounded-lg items-center justify-center ${
+        disabled ? "bg-gray-400" : "bg-indigo-600"
       } ${className}`}
       onPress={onPress}
       disabled={disabled}
@@ -29,9 +29,7 @@ export default function Button({
       {loading ? (
         <ActivityIndicator color="#ffffff" />
       ) : (
-        <Text className={`text-white font-semibold ${textClassName}`}>
-          {title}
-        </Text>
+        <Text className={`text-white text-xl ${textClassName}`}>{title}</Text>
       )}
     </TouchableOpacity>
   );

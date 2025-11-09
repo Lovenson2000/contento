@@ -1,5 +1,5 @@
 // LOGO ICON
-export const LogoImage = require("@/assets/images/full-logo.png");
+export const LogoImage = require("@/assets/images/new_full_logo.png");
 
 // SETTINGS ICONS
 export const DeleteAccountIcon = require("@/assets/images/lock.png");

@@ -37,8 +37,8 @@ export default function Index() {
     useState(false);
 
   const { schedulePushNotification } = usePushNotifications();
+  const { user, isLoading: isLoadingUser } = useAuth();
 
-  const user = useAuth()?.user;
   const { getUserContents } = useContent();
   const {
     data: allContents = [],
@@ -132,7 +132,7 @@ export default function Index() {
     });
   }, [allContents, schedulePushNotification]);
 
-  if (isLoading) {
+  if (isLoadingUser || isLoading) {
     return <LoadingScreen />;
   }
 

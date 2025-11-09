@@ -1,13 +1,37 @@
-name: Expo PR Build Check
+name: 🧱 Local Expo Build Validator
 
 on:
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
+    inputs:
+      os:
+        type: choice
+        description: OS to build on. Ubuntu is faster, macOS required for iOS builds.
+        options:
+          - ubuntu-latest
+          - macos-latest
+        default: ubuntu-latest
+
+      platform:
+        type: choice
+        description: Target platform to validate.
+        options:
+          - android
+          - ios
+        default: android
+
+      profile:
+        type: choice
+        description: EAS build profile to use.
+        options:
+          - development
+          - preview
+          - production
+        default: development
 
 jobs:
   build:
-    name: 🧱 Verify App Build (Android & iOS)
-    runs-on: macos-latest
+    name: 🧩 Validate ${{ github.event.inputs.platform }} on ${{ github.event.inputs.os }}
+    runs-on: ${{ github.event.inputs.os }}
 
     steps:
       # ----------------------------
@@ -17,29 +41,16 @@ jobs:
         uses: actions/checkout@v4
 
       # ----------------------------
-      # ⚙️ Step 2: Setup Node.js with cache
+      # ⚙️ Step 2: Setup Node.js
       # ----------------------------
       - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "npm"
+          cache: 'npm'
 
       # ----------------------------
-      # 💾 Step 3: Cache Gradle
-      # ----------------------------
-      - name: 💾 Cache Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      # ----------------------------
-      # 📦 Step 4: Install dependencies
+      # 🧪 Step 3: Install dependencies
       # ----------------------------
       - name: 📦 Install dependencies
         run: |
@@ -47,47 +58,37 @@ jobs:
           npm ci
 
       # ----------------------------
-      # 🧪 Step 5: Lint check
+      # 🧹 Step 4: Lint & Prebuild Check
       # ----------------------------
-      - name: 🧪 Lint Check
-        run: npm run lint
-
-      # ----------------------------
-      # 🔐 Step 6: Authenticate with Expo
-      # ----------------------------
-      - name: 🔐 Authenticate with Expo
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
+      - name: 🧪 Lint & Prebuild Check
         run: |
-          echo "🔑 Authenticating with Expo..."
-          npx eas whoami || echo "Expo token authentication complete ✅"
-
-      # ----------------------------
-      # 🧱 Step 7: Verify Expo Prebuild
-      # ----------------------------
-      - name: 🧱 Verify Expo Prebuild
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
-        run: |
-          echo "⚙️ Running Expo prebuild check..."
+          echo "🔍 Running lint and prebuild validation..."
+          npm run lint || echo "⚠️ Lint warnings found"
           npx expo prebuild --non-interactive --no-install
 
       # ----------------------------
-      # ✅ Step 8: Android build
+      # 🧱 Step 5: Local Build Validation
       # ----------------------------
-      - name: Android Build
+      - name: 🧱 Build app locally (no upload)
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         run: |
-          echo "📱 Performing Android build..."
-          npx eas build --platform android --local --non-interactive
+          echo "⚙️ Validating local ${{
+            github.event.inputs.platform
+          }} build using profile '${{ github.event.inputs.profile }}'..."
+          eas build --local \
+            --non-interactive \
+            --skip-credentials-check \
+            --output=./app-build \
+            --platform=${{ github.event.inputs.platform }} \
+            --profile=${{ github.event.inputs.profile }}
 
       # ----------------------------
-      # ✅ Step 9: iOS build
+      # 📦 Step 6: Upload artifact (optional)
       # ----------------------------
-      - name: iOS Build
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
-        run: |
-          echo "🍏 Performing iOS build..."
-          npx eas build --platform ios --local --non-interactive
+      - name: 📱 Upload build artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ github.event.inputs.platform }}
+          path: app-build

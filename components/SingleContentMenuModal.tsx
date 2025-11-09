@@ -107,7 +107,13 @@ export default function SingleContentMenuModal({
           <SingleMenuItem
             label={isFavorite ? "Mark Not Favorite" : "Add To Favorites"}
             onPress={handleFavoriteToggle}
-            icon={<AntDesign name="staro" size={18} color="#334155" />}
+            icon={
+              isFavorite ? (
+                <AntDesign name="star" size={18} color="#334155" />
+              ) : (
+                <AntDesign name="staro" size={18} color="#334155" />
+              )
+            }
           />
 
           <SingleMenuItem

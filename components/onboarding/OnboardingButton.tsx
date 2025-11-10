@@ -60,7 +60,7 @@ const OnboardingButton = ({ currentIndex, length, flatListRef }: Props) => {
         index: currentIndex.value + 1,
       });
     }
-  }, [isLast, completeOnboarding, flatListRef, currentIndex.value]);
+  }, [isLast, completeOnboarding, flatListRef, currentIndex]);
 
   return (
     <AnimatedPressable

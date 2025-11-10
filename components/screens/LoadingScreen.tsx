@@ -12,12 +12,12 @@ const LoadingScreen = () => {
         Animated.parallel([
           Animated.timing(scaleValue, {
             toValue: 1.15,
-            duration: 2500,
+            duration: 3500,
             useNativeDriver: true,
           }),
           Animated.timing(opacityValue, {
             toValue: 0.6,
-            duration: 2500,
+            duration: 3500,
             useNativeDriver: true,
           }),
         ]),

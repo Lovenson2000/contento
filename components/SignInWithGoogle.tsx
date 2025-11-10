@@ -71,9 +71,7 @@ export default function SignInWithGoogle() {
       onPress={handleGoogleSignIn}
     >
       <Image source={GoogleIcon} className="w-[30px] h-[30px]" />
-      <Text className="text-[#051542] text-base ml-2">
-        Continue with Google
-      </Text>
+      <Text className="text-[#051542] text-xl ml-2">Continue with Google</Text>
     </Pressable>
   );
 }

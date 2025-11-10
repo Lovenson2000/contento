@@ -55,7 +55,7 @@ export default function LoginScreen() {
         />
 
         <TouchableOpacity className="self-end mb-5">
-          <Text className="text-blue-500 text-sm">Forgot password?</Text>
+          <Text className="text-[#051542] font-normal">Forgot password?</Text>
         </TouchableOpacity>
 
         <Button title="Log In" onPress={signInWithEmail} disabled={loading} />
@@ -70,7 +70,7 @@ export default function LoginScreen() {
         <View className="flex-row justify-center mt-8">
           <Text className="text-gray-500">Don&apos;t have an account?</Text>
           <TouchableOpacity onPress={() => router.push("/signup")}>
-            <Text className="text-blue-500 font-medium"> Sign Up</Text>
+            <Text className="text-indigo-600 font-medium"> Sign Up</Text>
           </TouchableOpacity>
         </View>
       </View>

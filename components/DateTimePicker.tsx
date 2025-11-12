@@ -25,6 +25,7 @@ export default function CrossPlatformDateTimePicker({
       <DateTimePicker
         value={value}
         mode="datetime"
+        textColor="black"
         display="spinner"
         onChange={(event, selectedDate) => {
           if (selectedDate) {

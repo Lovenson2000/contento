@@ -12,7 +12,17 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.lovenson.contento",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "myapp",
+              "exp+contento",
+              "com.lovenson.contento",
+              "com.googleusercontent.apps.543473244209-bo2nekaer9ksq4lpkhs8i1om15f7fftj"
+            ]
+          }
+        ]
       }
     },
     "android": {
@@ -43,7 +53,7 @@
       [
         "@react-native-google-signin/google-signin",
         {
-          "iosUrlScheme": "com.googleusercontent.apps.261684861816-7solo5na1ar1u3547qe2ieu49477omgm"
+          "iosUrlScheme": "com.googleusercontent.apps.543473244209-bo2nekaer9ksq4lpkhs8i1om15f7fftj"
         }
       ],
       [

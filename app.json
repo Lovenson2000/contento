@@ -4,7 +4,7 @@
     "slug": "contento",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/icons/ios.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -23,11 +23,14 @@
             ]
           }
         ]
+      },
+      "icon": {
+        "light": "./assets/images/icons/ios.png"
       }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/icons/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.lovenson.contento"
@@ -42,10 +45,9 @@
       [
         "expo-splash-screen",
         {
+          "backgroundColor": "#ffffff",
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "imageWidth": 200
         }
       ],
       "expo-font",

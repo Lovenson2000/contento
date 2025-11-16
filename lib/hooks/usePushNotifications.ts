@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
@@ -12,6 +12,8 @@ export function usePushNotifications() {
     null
   );
   const responseListener = useRef<Notifications.EventSubscription | null>(null);
+
+  const scheduledNotifications = useRef<Map<string, string>>(new Map());
 
   useEffect(() => {
     registerForPushNotificationsAsync().then(
@@ -34,38 +36,72 @@ export function usePushNotifications() {
     };
   }, []);
 
+  const schedulePushNotification = useCallback(
+    async (remindAt: Date, title: string, contentId: string) => {
+      if (remindAt <= new Date()) {
+        console.warn("Reminder time must be a future time");
+        return;
+      }
+
+      try {
+        const existingNotificationId =
+          scheduledNotifications.current.get(contentId);
+        if (existingNotificationId) {
+          await Notifications.cancelScheduledNotificationAsync(
+            existingNotificationId
+          );
+          console.log(`Canceled old notification for content: ${contentId}`);
+        }
+
+        const notificationId = await Notifications.scheduleNotificationAsync({
+          content: {
+            title: title || "Reminder",
+            body: `Time to enjoy your content! ${title}`,
+            data: { remindAt: remindAt.toISOString(), contentId: contentId },
+          },
+          trigger: {
+            type: Notifications.SchedulableTriggerInputTypes.DATE,
+            date: remindAt,
+          },
+        });
+
+        scheduledNotifications.current.set(contentId, notificationId);
+        return notificationId;
+      } catch (err) {
+        console.error("❌ Error scheduling notification:", err);
+      }
+    },
+    []
+  );
+
+  const cancelNotification = useCallback(async (contentId: string) => {
+    const notificationId = scheduledNotifications.current.get(contentId);
+    if (notificationId) {
+      try {
+        await Notifications.cancelScheduledNotificationAsync(notificationId);
+        scheduledNotifications.current.delete(contentId);
+      } catch (err) {
+        console.error("Error canceling notification:", err);
+      }
+    }
+  }, []);
+
+  const cancelAllNotifications = useCallback(async () => {
+    try {
+      await Notifications.cancelAllScheduledNotificationsAsync();
+      scheduledNotifications.current.clear();
+    } catch (err) {
+      console.error("Error canceling all notifications:", err);
+    }
+  }, []);
+
   return {
     expoPushToken,
     notification,
     schedulePushNotification,
+    cancelNotification,
+    cancelAllNotifications,
   };
-}
-
-async function schedulePushNotification(
-  remindAt: Date,
-  title: string,
-  contentId: string
-) {
-  if (remindAt <= new Date()) {
-    console.warn("⚠️ reminder time must be a future time");
-    return;
-  }
-
-  try {
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: title || "Reminder",
-        body: `Time to enjoy your content! ${title}`,
-        data: { remindAt: remindAt.toISOString(), contentId: contentId },
-      },
-      trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.DATE,
-        date: remindAt,
-      },
-    });
-  } catch (err) {
-    console.error("❌ Error scheduling notification:", err);
-  }
 }
 
 async function registerForPushNotificationsAsync() {

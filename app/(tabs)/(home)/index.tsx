@@ -12,7 +12,7 @@ import {
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Entypo from "@expo/vector-icons/Entypo";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import SingleContentItem from "@/components/SingleContentItem";
 import ContentsFilters from "@/components/ContentFilters";
 import { socialMediaIcons } from "@/lib/constants/social-icons";
@@ -36,7 +36,11 @@ export default function Index() {
   const [isAddContentModalVisible, setIsAddContentModalVisible] =
     useState(false);
 
-  const { schedulePushNotification } = usePushNotifications();
+  const { schedulePushNotification, cancelAllNotifications } =
+    usePushNotifications();
+
+  const scheduledContentIdsRef = useRef<string>("");
+
   const { user, isLoading: isLoadingUser } = useAuth();
 
   const { getUserContents } = useContent();
@@ -121,16 +125,35 @@ export default function Index() {
 
   useEffect(() => {
     if (!allContents.length) return;
-    // Schedule notifications for contents with remindAt in the future
-    allContents.forEach((content) => {
-      if (content.remindAt) {
-        const remindDate = new Date(content.remindAt);
-        if (remindDate > new Date()) {
-          schedulePushNotification(remindDate, content.title, content.id);
+
+    const contentHash = allContents
+      .map((c) => `${c.id}:${c.remindAt || "none"}`)
+      .sort()
+      .join("|");
+
+    if (scheduledContentIdsRef.current === contentHash) return;
+
+    const scheduleNotifications = async () => {
+      await cancelAllNotifications();
+
+      for (const content of allContents) {
+        if (content.remindAt) {
+          const remindDate = new Date(content.remindAt);
+          if (remindDate > new Date()) {
+            await schedulePushNotification(
+              remindDate,
+              content.title,
+              content.id
+            );
+          }
         }
       }
-    });
-  }, [allContents, schedulePushNotification]);
+
+      scheduledContentIdsRef.current = contentHash;
+    };
+
+    scheduleNotifications();
+  }, [allContents, cancelAllNotifications, schedulePushNotification]);
 
   if (isLoadingUser || isLoading) {
     return <LoadingScreen />;

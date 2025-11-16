@@ -39,7 +39,7 @@ export function usePushNotifications() {
   const schedulePushNotification = useCallback(
     async (remindAt: Date, title: string, contentId: string) => {
       if (remindAt <= new Date()) {
-        console.warn("Reminder time must be a future time");
+        console.warn("⚠️ Reminder time must be a future time");
         return;
       }
 
@@ -50,7 +50,6 @@ export function usePushNotifications() {
           await Notifications.cancelScheduledNotificationAsync(
             existingNotificationId
           );
-          console.log(`Canceled old notification for content: ${contentId}`);
         }
 
         const notificationId = await Notifications.scheduleNotificationAsync({
@@ -66,6 +65,7 @@ export function usePushNotifications() {
         });
 
         scheduledNotifications.current.set(contentId, notificationId);
+
         return notificationId;
       } catch (err) {
         console.error("❌ Error scheduling notification:", err);
@@ -81,17 +81,41 @@ export function usePushNotifications() {
         await Notifications.cancelScheduledNotificationAsync(notificationId);
         scheduledNotifications.current.delete(contentId);
       } catch (err) {
-        console.error("Error canceling notification:", err);
+        console.error("❌ Error canceling notification:", err);
       }
     }
   }, []);
+
+  const cancelNotificationsByContentIds = useCallback(
+    async (contentIds: string[]) => {
+      try {
+        const allScheduled =
+          await Notifications.getAllScheduledNotificationsAsync();
+        const notificationsToCancel = allScheduled.filter((notif) => {
+          const contentId = notif.content.data?.contentId;
+          return contentId && contentIds.includes(contentId as string);
+        });
+
+        for (const notif of notificationsToCancel) {
+          await Notifications.cancelScheduledNotificationAsync(
+            notif.identifier
+          );
+          const contentId = notif.content.data?.contentId as string;
+          scheduledNotifications.current.delete(contentId);
+        }
+      } catch (err) {
+        console.error("❌ Error canceling notifications by content IDs:", err);
+      }
+    },
+    []
+  );
 
   const cancelAllNotifications = useCallback(async () => {
     try {
       await Notifications.cancelAllScheduledNotificationsAsync();
       scheduledNotifications.current.clear();
     } catch (err) {
-      console.error("Error canceling all notifications:", err);
+      console.error("❌ Error canceling all notifications:", err);
     }
   }, []);
 
@@ -100,6 +124,7 @@ export function usePushNotifications() {
     notification,
     schedulePushNotification,
     cancelNotification,
+    cancelNotificationsByContentIds,
     cancelAllNotifications,
   };
 }

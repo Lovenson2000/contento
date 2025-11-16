@@ -36,7 +36,7 @@ export default function Index() {
   const [isAddContentModalVisible, setIsAddContentModalVisible] =
     useState(false);
 
-  const { schedulePushNotification, cancelAllNotifications } =
+  const { schedulePushNotification, cancelNotificationsByContentIds } =
     usePushNotifications();
 
   const scheduledContentIdsRef = useRef<string>("");
@@ -134,7 +134,8 @@ export default function Index() {
     if (scheduledContentIdsRef.current === contentHash) return;
 
     const scheduleNotifications = async () => {
-      await cancelAllNotifications();
+      const allContentIds = allContents.map((c) => c.id);
+      await cancelNotificationsByContentIds(allContentIds);
 
       for (const content of allContents) {
         if (content.remindAt) {
@@ -153,7 +154,7 @@ export default function Index() {
     };
 
     scheduleNotifications();
-  }, [allContents, cancelAllNotifications, schedulePushNotification]);
+  }, [allContents, cancelNotificationsByContentIds, schedulePushNotification]);
 
   if (isLoadingUser || isLoading) {
     return <LoadingScreen />;

@@ -72,10 +72,10 @@ export default function SingleContentMenuModal({
     >
       <Pressable className="flex-1" onPress={onClose}>
         <View
-          className="absolute w-52 bg-white rounded-lg p-2 z-50"
+          className="absolute w-60 bg-white rounded-lg py-1 z-50"
           style={{
             top: position.top + 25,
-            left: position.left - 160,
+            left: position.left - 192,
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 4 },
             shadowOpacity: 0.1,

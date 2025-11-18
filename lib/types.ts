@@ -6,7 +6,7 @@ export type Content = {
   tags: string[];
   userId: string;
   createdAt: Date;
-  remindAt?: Date;
+  remindAt?: Date | null;
   thumbnail?: string;
   isFavorite?: boolean;
 };

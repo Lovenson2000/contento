@@ -77,6 +77,24 @@ export const useContent = () => {
     },
   });
 
+  const removeContentReminder = useMutation({
+    mutationFn: ({ contentId }: { contentId: string }) =>
+      updateContent(contentId, { remindAt: null }),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["contents"] });
+
+      queryClient.setQueryData(
+        ["content", variables.contentId],
+        (oldData: Content | undefined) => {
+          if (oldData) {
+            return { ...oldData, remindAt: null };
+          }
+          return oldData;
+        }
+      );
+    },
+  });
+
   const markContentAsFavorite = useMutation({
     mutationFn: ({ contentId }: { contentId: string }) =>
       markAsFavorite(contentId),
@@ -127,5 +145,6 @@ export const useContent = () => {
     markContentAsFavorite,
     removeContentFromFavorites,
     updateContentReminderDate,
+    removeContentReminder,
   };
 };

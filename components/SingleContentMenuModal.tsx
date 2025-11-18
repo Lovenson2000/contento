@@ -13,6 +13,7 @@ type Props = {
   onEdit: () => void;
   onAddToFavorites: () => void;
   onRemoveFromFavorites: () => void;
+  onRemoveReminder: () => void;
   isFavorite?: boolean;
   position: { top: number; left: number };
   content: Content;
@@ -25,6 +26,7 @@ export default function SingleContentMenuModal({
   onEdit,
   onAddToFavorites,
   onRemoveFromFavorites,
+  onRemoveReminder,
   isFavorite,
   position,
   content,
@@ -115,6 +117,19 @@ export default function SingleContentMenuModal({
               )
             }
           />
+
+          {content.remindAt && (
+            <SingleMenuItem
+              label="Remove Reminder"
+              onPress={() => {
+                onRemoveReminder();
+                onClose();
+              }}
+              icon={
+                <MaterialIcons name="alarm-off" size={18} color="#334155" />
+              }
+            />
+          )}
 
           <SingleMenuItem
             label="Delete"

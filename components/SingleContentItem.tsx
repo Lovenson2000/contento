@@ -27,6 +27,7 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
     markContentAsFavorite,
     removeContentFromFavorites,
     updateContentReminderDate,
+    removeContentReminder,
   } = useContent();
 
   const router = useRouter();
@@ -43,6 +44,14 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
   const handleAddReminder = () => {
     setDateValue(new Date());
     setIsDatePickerVisible(true);
+  };
+
+  const handleRemoveReminder = async () => {
+    try {
+      await removeContentReminder.mutateAsync({ contentId: content.id });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleDeleteContent = async () => {
@@ -122,7 +131,10 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
 
         <View className="absolute right-4 bottom-4">
           {content.remindAt ? (
-            <View className="flex-row items-center text-xs flex-1 gap-2 border rounded-md border-slate-100 px-2 py-1 text-gray-400">
+            <Pressable
+              className="flex-row items-center text-xs flex-1 gap-2 border rounded-md border-slate-100 px-2 py-1 text-gray-400"
+              onPress={handleAddReminder}
+            >
               <Ionicons
                 name="notifications-outline"
                 size={16}
@@ -131,7 +143,7 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
               <Text className="text-sm text-slate-700">
                 {formatRemindTime(new Date(content.remindAt))}
               </Text>
-            </View>
+            </Pressable>
           ) : (
             <Pressable onPress={handleAddReminder}>
               <Text className="text-sm text-slate-900 bg-gray-100 px-2 py-1 rounded-lg">
@@ -148,6 +160,7 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
         onDelete={handleDeleteContent}
         onEdit={handleEditContent}
         onAddToFavorites={handleMarkAsFavorite}
+        onRemoveReminder={handleRemoveReminder}
         onRemoveFromFavorites={handleRemoveFromFavorites}
         isFavorite={content.isFavorite}
         position={menuPosition}

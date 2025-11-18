@@ -106,7 +106,10 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
         className="flex-row items-center border border-slate-100 p-4 rounded-md mb-6 w-full"
         onPress={() => router.push(`/${content.id}`)}
       >
-        <Pressable className="absolute right-4 top-4" onPress={handleMenuPress}>
+        <Pressable
+          className="absolute right-4 px-2 py-1 top-4"
+          onPress={handleMenuPress}
+        >
           <MaterialCommunityIcons
             name="dots-vertical"
             size={20}

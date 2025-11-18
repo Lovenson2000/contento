@@ -1,6 +1,6 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useState } from "react";
-import { Platform, View } from "react-native";
+import React, { useState } from "react";
+import { Modal, Platform, View, StyleSheet } from "react-native";
 
 type Props = {
   value: Date;
@@ -20,72 +20,90 @@ export default function CrossPlatformDateTimePicker({
 
   if (!visible) return null;
 
-  if (Platform.OS === "ios") {
+  if (Platform.OS === "android") {
     return (
-      <DateTimePicker
-        value={value}
-        mode="datetime"
-        textColor="black"
-        display="spinner"
-        onChange={(event, selectedDate) => {
-          if (selectedDate) {
-            onChange(selectedDate);
-          }
-          onDismiss?.();
-        }}
-      />
+      <>
+        {!showTimePicker && (
+          <DateTimePicker
+            value={tempDate ?? value}
+            mode="date"
+            display="default"
+            onChange={(event, selectedDate) => {
+              if (event.type === "dismissed") {
+                setTempDate(null);
+                setShowTimePicker(false);
+                onDismiss?.();
+                return;
+              }
+
+              if (selectedDate) {
+                setTempDate(selectedDate);
+                setShowTimePicker(true);
+              }
+            }}
+          />
+        )}
+
+        {showTimePicker && (
+          <DateTimePicker
+            value={tempDate ?? value}
+            mode="time"
+            display="default"
+            onChange={(event, selectedTime) => {
+              if (event.type === "dismissed") {
+                setTempDate(null);
+                setShowTimePicker(false);
+                onDismiss?.();
+                return;
+              }
+
+              if (selectedTime && tempDate) {
+                const combined = new Date(tempDate);
+                combined.setHours(selectedTime.getHours());
+                combined.setMinutes(selectedTime.getMinutes());
+                setTempDate(null);
+                setShowTimePicker(false);
+                onChange(combined);
+              }
+            }}
+          />
+        )}
+      </>
     );
   }
 
   return (
-    <View>
-      {!showTimePicker && (
-        <DateTimePicker
-          value={value}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => {
-            if (event.type === "dismissed") {
-              onDismiss?.();
-              return;
-            }
-
-            if (selectedDate) {
-              const updated = new Date(selectedDate);
-              const original = value;
-              updated.setHours(original.getHours());
-              updated.setMinutes(original.getMinutes());
-              setTempDate(updated);
-              setShowTimePicker(true);
-            }
-          }}
-        />
-      )}
-
-      {showTimePicker && (
-        <DateTimePicker
-          value={value}
-          mode="time"
-          display="default"
-          onChange={(event, selectedTime) => {
-            setShowTimePicker(false);
-
-            if (event.type === "dismissed") {
-              onDismiss?.();
-              return;
-            }
-
-            if (selectedTime && tempDate) {
-              const updated = new Date(tempDate);
-              updated.setHours(selectedTime.getHours());
-              updated.setMinutes(selectedTime.getMinutes());
-              onChange(updated);
-            }
-
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onDismiss}
+    >
+      <View className="flex-1 bg-slate-900/40 justify-center items-center">
+        <View
+          style={StyleSheet.absoluteFillObject}
+          onStartShouldSetResponder={() => {
             onDismiss?.();
+            return true;
           }}
         />
-      )}
-    </View>
+        <View className="w-[90%] bg-slate-800 rounded-2xl p-2">
+          <DateTimePicker
+            value={value}
+            mode="datetime"
+            display="spinner"
+            onChange={(event, selectedDate) => {
+              if (event.type === "dismissed") {
+                onDismiss?.();
+                return;
+              }
+              if (selectedDate) {
+                onChange(selectedDate);
+              }
+            }}
+          />
+        </View>
+      </View>
+    </Modal>
   );
 }

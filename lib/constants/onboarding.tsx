@@ -10,8 +10,8 @@ export const onboardingContents = [
     image: require("@/assets/images/content.jpg"),
   },
   {
-    title: "Organize your content by source, category and more",
-    description: "Keep your content organized and accessible anytime.",
+    title: "Stop Doom Scrolling",
+    description: "Only Consume Content that Matters to You.",
     image: require("@/assets/images/organize.png"),
   },
   {

@@ -3,8 +3,10 @@ import {
   InstagramIcon,
   LinkedInIcon,
   MediumIcon,
+  PinterestIcon,
   QuoraIcon,
   RedditIcon,
+  ThreadsIcon,
   TiktokIcon,
   TwitterIcon,
   YoutubeIcon,
@@ -29,6 +31,8 @@ const socialMediaIcons: Record<string, ImageSourcePropType> = {
   LinkedIn: LinkedInIcon,
   Medium: MediumIcon,
   Quora: QuoraIcon,
+  Threads: ThreadsIcon,
+  Pinterest: PinterestIcon,
 };
 
 export default function ContentsFilters({

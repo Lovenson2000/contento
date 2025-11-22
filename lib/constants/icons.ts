@@ -8,6 +8,7 @@ export const ContactUsIcon = require("@/assets/images/envelope.png");
 export const PrivacyAndPolicyIcon = require("@/assets/images/shield.png");
 
 // SOCIAL ICONS
+
 export const YoutubeIcon = require("@/assets/images/youtube.png");
 export const TiktokIcon = require("@/assets/images/tiktok.png");
 export const InstagramIcon = require("@/assets/images/instagram.png");
@@ -17,3 +18,5 @@ export const RedditIcon = require("@/assets/images/reddit.png");
 export const LinkedInIcon = require("@/assets/images/linkedin.png");
 export const MediumIcon = require("@/assets/images/medium.png");
 export const QuoraIcon = require("@/assets/images/quora.png");
+export const ThreadsIcon = require("@/assets/images/threads.png");
+export const PinterestIcon = require("@/assets/images/pinterest.png");

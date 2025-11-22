@@ -13,6 +13,8 @@ import RedditScreen from "@/components/screens/RedditScreen";
 import TiktokScreen from "@/components/screens/TiktokScreen";
 import MediumScreen from "@/components/screens/MediumScreen";
 import BlueSkyScreen from "@/components/screens/BlueskyScreen";
+import ThreadsScreen from "@/components/screens/ThreadsScreen";
+import PinterestScreen from "@/components/screens/PinterestScreen";
 
 export default function ContentDetailPage() {
   const params = useLocalSearchParams();
@@ -68,6 +70,12 @@ export default function ContentDetailPage() {
       )}
       {content?.source?.toLowerCase() === "bluesky" && (
         <BlueSkyScreen content={content} />
+      )}
+      {content?.source?.toLowerCase() === "threads" && (
+        <ThreadsScreen content={content} />
+      )}
+      {content?.source?.toLowerCase() === "pinterest" && (
+        <PinterestScreen content={content} />
       )}
       {content?.source?.toLowerCase() === "unknown" && (
         <BlueSkyScreen content={content} />

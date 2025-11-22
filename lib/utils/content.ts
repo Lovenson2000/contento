@@ -10,8 +10,12 @@ const linkedinBaseUrl = "https://www.linkedin.com/";
 const facebookBaseUrl = "https://www.facebook.com/";
 const mediumBaseUrl = "https://medium.com/";
 const blueskyBaseUrl = "https://bsky.app/";
+const threadsBaseUrl = "https://www.threads.com/";
+const pinterestBaseUrl = "https://www.pinterest.com/";
+const pinterestShortBaseUrl = "https://pin.it/";
 
 export function getContentSource(source: string): string {
+  console.log(source);
   if (
     source.startsWith(youtubeBaseUrl) ||
     source.startsWith(youtubeWatchBaseUrl) ||
@@ -28,6 +32,13 @@ export function getContentSource(source: string): string {
   if (source.startsWith(mediumBaseUrl) || source.includes("medium.com"))
     return "medium";
   if (source.startsWith(blueskyBaseUrl)) return "bluesky";
+  if (source.startsWith(threadsBaseUrl)) return "threads";
+  if (
+    source.startsWith(pinterestBaseUrl) ||
+    source.startsWith(pinterestShortBaseUrl)
+  )
+    return "pinterest";
+
   return "unknown";
 }
 

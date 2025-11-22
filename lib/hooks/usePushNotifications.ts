@@ -15,6 +15,35 @@ export function usePushNotifications() {
 
   const scheduledNotifications = useRef<Map<string, string>>(new Map());
 
+  const cancelNotification = useCallback(async (contentId: string) => {
+    try {
+      // Gather every scheduled notification tied to this content ID, even if the in-memory
+      // map was cleared by an app restart, so we don't leave behind duplicates.
+      const allScheduled =
+        await Notifications.getAllScheduledNotificationsAsync();
+      const ids = new Set<string>();
+
+      const idFromMap = scheduledNotifications.current.get(contentId);
+      if (idFromMap) {
+        ids.add(idFromMap);
+      }
+
+      allScheduled
+        .filter((notif) => notif.content.data?.contentId === contentId)
+        .forEach((notif) => ids.add(notif.identifier));
+
+      await Promise.all(
+        Array.from(ids).map((id) =>
+          Notifications.cancelScheduledNotificationAsync(id)
+        )
+      );
+
+      scheduledNotifications.current.delete(contentId);
+    } catch (err) {
+      console.error("❌ Error canceling notification:", err);
+    }
+  }, []);
+
   useEffect(() => {
     registerForPushNotificationsAsync().then(
       (token) => token && setExpoPushToken(token)
@@ -44,13 +73,7 @@ export function usePushNotifications() {
       }
 
       try {
-        const existingNotificationId =
-          scheduledNotifications.current.get(contentId);
-        if (existingNotificationId) {
-          await Notifications.cancelScheduledNotificationAsync(
-            existingNotificationId
-          );
-        }
+        await cancelNotification(contentId);
 
         const notificationId = await Notifications.scheduleNotificationAsync({
           content: {
@@ -71,20 +94,8 @@ export function usePushNotifications() {
         console.error("❌ Error scheduling notification:", err);
       }
     },
-    []
+    [cancelNotification]
   );
-
-  const cancelNotification = useCallback(async (contentId: string) => {
-    const notificationId = scheduledNotifications.current.get(contentId);
-    if (notificationId) {
-      try {
-        await Notifications.cancelScheduledNotificationAsync(notificationId);
-        scheduledNotifications.current.delete(contentId);
-      } catch (err) {
-        console.error("❌ Error canceling notification:", err);
-      }
-    }
-  }, []);
 
   const cancelNotificationsByContentIds = useCallback(
     async (contentIds: string[]) => {
@@ -152,7 +163,6 @@ async function registerForPushNotificationsAsync() {
     }
 
     if (finalStatus !== "granted") {
-      alert("Failed to get push token for push notification!");
       return;
     }
 
@@ -160,8 +170,6 @@ async function registerForPushNotificationsAsync() {
       Constants?.expoConfig?.extra?.eas?.projectId ??
       Constants?.easConfig?.projectId;
     token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
-  } else {
-    alert("Must use physical device for Push Notifications");
   }
 
   return token;

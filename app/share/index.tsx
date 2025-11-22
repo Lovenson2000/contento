@@ -3,8 +3,7 @@ import AddNewContentModal from "@/components/AddContentModal";
 import { useShareIntentContext } from "expo-share-intent";
 import { useRouter } from "expo-router";
 import { View } from "react-native";
-import { extractYoutubeIdFromUrl, getContentSource } from "@/lib/utils/content";
-import { fetchYoutubeVideoDetails } from "@/lib/api/youtube";
+import { extractMetadata } from "@/lib/utils/extract_metadata";
 
 export default function ShareScreen() {
   const router = useRouter();
@@ -19,46 +18,21 @@ export default function ShareScreen() {
 
   useEffect(() => {
     const handleShareIntent = async () => {
-      if ((hasShareIntent && shareIntent?.webUrl) || shareIntent?.text) {
-        const url = shareIntent.webUrl ?? "";
-        const source = getContentSource(url);
+      if (!hasShareIntent) return;
 
-        if (source?.toLowerCase() === "youtube") {
-          try {
-            const videoId = extractYoutubeIdFromUrl(url);
-            if (videoId) {
-              const data = await fetchYoutubeVideoDetails(videoId);
-              const videoTitle = data.snippet?.title;
+      const url = shareIntent.webUrl ?? "";
+      const metadata = await extractMetadata(url);
 
-              setInitialShareData({
-                title: videoTitle ?? "",
-                url,
-              });
-            }
-          } catch (error) {
-            console.error("Failed to fetch YouTube title:", error);
-            setInitialShareData({ title: "", url });
-          }
-        } else {
-          const textTitle =
-            shareIntent.text && shareIntent.text !== url
-              ? shareIntent.text
-              : "";
+      setInitialShareData({
+        title: metadata?.title ?? "",
+        url,
+      });
 
-          setInitialShareData({
-            title: textTitle,
-            url,
-          });
-        }
-
-        setIsModalVisible(true);
-      } else {
-        router.replace("/");
-      }
+      setIsModalVisible(true);
     };
 
     handleShareIntent();
-  }, [hasShareIntent, shareIntent, router]);
+  }, [hasShareIntent, shareIntent.webUrl]);
 
   const handleClose = () => {
     setIsModalVisible(false);

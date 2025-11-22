@@ -4,18 +4,16 @@ import { ActivityIndicator, Text, View } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import YoutubePlayer from "react-native-youtube-iframe";
 import { Content } from "@/lib/types";
-import ContentActions from "../ContentActions";
-import { useContent } from "@/lib/api/hooks/useContent";
 
 export default function YoutubeScreen({ content }: { content: Content }) {
   const [playing, setPlaying] = useState(false);
   const [videoData, setVideoData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const { getContentById } = useContent();
-  const { data: freshContent } = getContentById(content.id);
+  // const { getContentById } = useContent();
+  // const { data: freshContent } = getContentById(content.id);
 
-  const currentContent = freshContent ?? content;
+  // const currentContent = freshContent ?? content;
 
   const videoId = extractYoutubeIdFromUrl(content.url);
 
@@ -72,7 +70,7 @@ export default function YoutubeScreen({ content }: { content: Content }) {
           {videoData.snippet?.title ?? "Untitled"}
         </Text>
       </View>
-      <ContentActions content={currentContent} />
+      {/* <ContentActions content={currentContent} /> */}
     </View>
   );
 }

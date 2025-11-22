@@ -31,6 +31,10 @@ export default function SettingsScreen() {
     }
   };
 
+  const goToLogin = () => {
+    router.push("/login");
+  };
+
   const deleteAccount = async () => {
     if (!user) return;
     const { error } = await supabase.auth.admin.deleteUser(user.id);
@@ -48,6 +52,10 @@ export default function SettingsScreen() {
     Linking.openURL("mailto:beaucicotlovenson@gmail.com");
   };
 
+  const openPrivacyPolicy = () => {
+    Linking.openURL("https://contentoapp.netlify.app/privacy");
+  };
+
   return (
     <>
       <ScrollView className="flex-1 bg-white">
@@ -55,8 +63,8 @@ export default function SettingsScreen() {
           <SectionHeader title="Account Settings" />
           <SettingsOption
             iconSource={LogOutIcon}
-            label="Log out"
-            onPress={signout}
+            label={user ? "Log Out" : "Log In"}
+            onPress={user ? signout : goToLogin}
           />
           <SettingsOption
             iconSource={DeleteAccountIcon}
@@ -72,6 +80,7 @@ export default function SettingsScreen() {
           <SettingsOption
             iconSource={PrivacyAndPolicyIcon}
             label="Privacy and Policy"
+            onPress={openPrivacyPolicy}
           />
         </View>
       </ScrollView>

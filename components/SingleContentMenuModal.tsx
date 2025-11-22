@@ -1,5 +1,13 @@
 import React from "react";
-import { Linking, Modal, Pressable, View, Platform, Alert } from "react-native";
+import {
+  Linking,
+  Modal,
+  Pressable,
+  View,
+  Platform,
+  Alert,
+  Dimensions,
+} from "react-native";
 import { MaterialIcons, Feather, AntDesign, Entypo } from "@expo/vector-icons";
 import SingleMenuItem from "./SingleMenuItem";
 import { Content } from "@/lib/types";
@@ -15,7 +23,7 @@ type Props = {
   onRemoveFromFavorites: () => void;
   onRemoveReminder: () => void;
   isFavorite?: boolean;
-  position: { top: number; left: number };
+  menuY: number;
   content: Content;
 };
 
@@ -28,9 +36,17 @@ export default function SingleContentMenuModal({
   onRemoveFromFavorites,
   onRemoveReminder,
   isFavorite,
-  position,
+  menuY,
   content,
 }: Props) {
+  const SCREEN_HEIGHT = Dimensions.get("window").height;
+  const MODAL_HEIGHT = 230; // approximate height of menu
+  const PADDING = 20;
+
+  const top =
+    menuY + MODAL_HEIGHT + PADDING > SCREEN_HEIGHT
+      ? SCREEN_HEIGHT - MODAL_HEIGHT - PADDING
+      : menuY;
   const handleOpenLink = async () => {
     const url = normalizeUrl(content.url);
 
@@ -76,8 +92,8 @@ export default function SingleContentMenuModal({
         <View
           className="absolute w-60 bg-white rounded-lg py-1 z-50"
           style={{
-            top: position.top + 25,
-            left: position.left - 192,
+            top: top + 40,
+            right: 15,
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 4 },
             shadowOpacity: 0.1,

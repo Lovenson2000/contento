@@ -1,5 +1,13 @@
-import { useState } from "react";
-import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
+import { useRef, useState } from "react";
+import {
+  Image,
+  Platform,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import * as Haptics from "expo-haptics";
 import { socialMediaIcons } from "@/lib/constants/social-icons";
 import { Content } from "@/lib/types";
 import { capitalizeFirstLetter, truncateText } from "@/lib/utils/content";
@@ -17,10 +25,11 @@ type SingleContentItemProps = {
 };
 export default function SingleContentItem({ content }: SingleContentItemProps) {
   const [menuVisible, setMenuVisible] = useState(false);
-  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [dateValue, setDateValue] = useState(new Date());
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const cardRef = useRef<View>(null);
+  const [menuY, setMenuY] = useState(0);
 
   const {
     deleteContentMutation,
@@ -35,10 +44,16 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
   const iconSource =
     socialMediaIcons[content.source?.toLocaleLowerCase() as string];
 
-  const handleMenuPress = (event: any) => {
-    const { pageX, pageY } = event.nativeEvent;
-    setMenuPosition({ top: pageY, left: pageX });
-    setMenuVisible(true);
+  const handleMenuPress = () => {
+    cardRef.current?.measureInWindow((x, y, width, height) => {
+      setMenuY(y);
+      setMenuVisible(true);
+    });
+    if (Platform.OS === "android") {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } else {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
   };
 
   const handleAddReminder = () => {
@@ -103,8 +118,10 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
   return (
     <>
       <TouchableOpacity
+        ref={cardRef}
         className="flex-row items-center border border-slate-100 p-4 rounded-md mb-6 w-full"
         onPress={() => router.push(`/${content.id}`)}
+        onLongPress={handleMenuPress}
       >
         <Pressable
           className="absolute right-4 px-2 py-1 top-4"
@@ -166,7 +183,7 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
         onRemoveReminder={handleRemoveReminder}
         onRemoveFromFavorites={handleRemoveFromFavorites}
         isFavorite={content.isFavorite}
-        position={menuPosition}
+        menuY={menuY}
         content={content}
       />
       <CrossPlatformDateTimePicker

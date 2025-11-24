@@ -12,6 +12,7 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import SignInWithGoogle from "@/components/SignInWithGoogle";
 import LogoSection from "@/components/LogoSection";
+import AppleAuth from "@/components/AppleAuth";
 
 export default function SignupScreen() {
   const [email, setEmail] = useState("");
@@ -60,7 +61,10 @@ export default function SignupScreen() {
           <View className="flex-1 h-px bg-gray-200" />
         </View>
 
-        <SignInWithGoogle />
+        <View className="flex flex-col gap-2">
+          <AppleAuth />
+          <SignInWithGoogle />
+        </View>
         <View className="flex-row justify-center mt-8">
           <Text className="text-gray-500">Already have an account?</Text>
           <TouchableOpacity onPress={() => router.push("/login")}>

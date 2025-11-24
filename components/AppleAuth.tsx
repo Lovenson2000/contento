@@ -56,7 +56,7 @@ export default function AppleAuth() {
   return (
     <Pressable
       onPress={handleAppleSignIn}
-      className="flex-row items-center border border-slate-200 justify-center bg-white py-3 px-5 rounded-lg shadow-md gap-2"
+      className="flex-row items-center border border-slate-200 justify-center bg-white py-3 px-5 rounded-lg gap-2"
     >
       <Image source={AppleIcon} className="w-[30px] h-[30px]" />
       <Text className="text-[#051542] text-xl ml-2">Continue with Apple</Text>

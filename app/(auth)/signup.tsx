@@ -5,6 +5,7 @@ import {
   Alert,
   TouchableOpacity,
   SafeAreaView,
+  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { supabase } from "@/lib/supabase";
@@ -19,6 +20,7 @@ export default function SignupScreen() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const isIos = Platform.OS === "ios";
 
   async function signUpWithEmail() {
     setLoading(true);
@@ -62,7 +64,7 @@ export default function SignupScreen() {
         </View>
 
         <View className="flex flex-col gap-2">
-          <AppleAuth />
+          {isIos && <AppleAuth />}
           <SignInWithGoogle />
         </View>
         <View className="flex-row justify-center mt-8">

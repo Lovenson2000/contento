@@ -11,7 +11,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import { View, ScrollView, Linking } from "react-native";
 
 export default function SettingsScreen() {

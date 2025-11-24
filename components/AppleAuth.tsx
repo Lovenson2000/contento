@@ -1,9 +1,11 @@
 import { Platform, Image, Text, Pressable } from "react-native";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { supabase } from "@/lib/supabase";
+import { useRouter } from "expo-router";
 const AppleIcon = require("@/assets/images/apple.png");
 
 export default function AppleAuth() {
+  const router = useRouter();
   if (Platform.OS !== "ios") return null;
 
   const handleAppleSignIn = async () => {
@@ -38,6 +40,7 @@ export default function AppleAuth() {
             family_name: credential.fullName.familyName,
           },
         });
+        router.replace("/(tabs)");
       }
     } catch (err: unknown) {
       if (

@@ -6,13 +6,14 @@ import SignInWithGoogle from "@/components/SignInWithGoogle";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "expo-router";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   View,
   TouchableOpacity,
   Text,
   SafeAreaView,
+  Platform,
 } from "react-native";
 
 export default function LoginScreen() {
@@ -20,6 +21,7 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const isIos = Platform.OS === "ios";
 
   async function signInWithEmail() {
     setLoading(true);
@@ -68,7 +70,7 @@ export default function LoginScreen() {
         </View>
 
         <View className="flex flex-col gap-2">
-          <AppleAuth />
+          {isIos && <AppleAuth />}
           <SignInWithGoogle />
         </View>
 

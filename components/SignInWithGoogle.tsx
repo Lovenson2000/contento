@@ -12,7 +12,7 @@ const GoogleIcon = require("@/assets/images/google.png");
 export default function SignInWithGoogle() {
   useEffect(() => {
     GoogleSignin.configure({
-      scopes: ["https://www.googleapis.com/auth/drive"],
+      scopes: ["profile", "email"],
       iosClientId:
         "543473244209-bo2nekaer9ksq4lpkhs8i1om15f7fftj.apps.googleusercontent.com",
       offlineAccess: true,

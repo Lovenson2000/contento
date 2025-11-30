@@ -22,6 +22,14 @@
               "com.lovenson.contento",
               "com.googleusercontent.apps.543473244209-bo2nekaer9ksq4lpkhs8i1om15f7fftj"
             ]
+          },
+          {
+            "CFBundleURLSchemes": [
+              "myapp",
+              "exp+contento",
+              "com.lovenson.contento",
+              "com.googleusercontent.apps.543473244209-bo2nekaer9ksq4lpkhs8i1om15f7fftj"
+            ]
           }
         ]
       },
@@ -89,6 +97,12 @@
       "eas": {
         "projectId": "7dda0cc0-6209-4911-bb1b-5ded06254925"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/7dda0cc0-6209-4911-bb1b-5ded06254925"
     }
   }
 }

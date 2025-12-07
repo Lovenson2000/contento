@@ -1,8 +1,8 @@
-import { LogoImage } from "@/lib/constants/icons";
+import { IosLogoImage } from "@/lib/constants/icons";
 import React, { useEffect, useRef } from "react";
-import { Animated, View, StyleSheet } from "react-native";
+import { Animated, View } from "react-native";
 
-const LoadingScreen = () => {
+export default function LoadingScreen() {
   const scaleValue = useRef(new Animated.Value(1)).current;
   const opacityValue = useRef(new Animated.Value(1)).current;
 
@@ -38,33 +38,16 @@ const LoadingScreen = () => {
   }, [opacityValue, scaleValue]);
 
   return (
-    <View style={styles.container}>
+    <View className="flex-1 justify-center dark:bg-zinc-950 items-center bg-white">
       <Animated.Image
-        source={LogoImage}
-        style={[
-          styles.logo,
-          {
-            transform: [{ scale: scaleValue }],
-            opacity: opacityValue,
-          },
-        ]}
+        source={IosLogoImage}
+        className="w-40 h-32"
+        style={{
+          transform: [{ scale: scaleValue }],
+          opacity: opacityValue,
+        }}
         resizeMode="contain"
       />
     </View>
   );
-};
-
-export default LoadingScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fefefe",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  logo: {
-    width: 160,
-    height: 160,
-  },
-});
+}

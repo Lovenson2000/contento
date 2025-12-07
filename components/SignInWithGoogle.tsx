@@ -24,7 +24,6 @@ export default function SignInWithGoogle() {
   }, []);
 
   const router = useRouter();
-
   const handleGoogleSignIn = async () => {
     try {
       await GoogleSignin.hasPlayServices();
@@ -67,11 +66,13 @@ export default function SignInWithGoogle() {
 
   return (
     <Pressable
-      className="flex-row items-center border border-slate-200 justify-center bg-white py-3 px-5 rounded-lg shadow-md gap-2"
+      className="flex-row items-center border dark:border-slate-700 border-slate-200 justify-center dark:bg-slate-900 bg-white py-3 px-5 rounded-lg shadow-md gap-2"
       onPress={handleGoogleSignIn}
     >
       <Image source={GoogleIcon} className="w-[30px] h-[30px]" />
-      <Text className="text-[#051542] text-xl">Continue with Google</Text>
+      <Text className="dark:text-slate-50 text-[#051542] text-xl">
+        Continue with Google
+      </Text>
     </Pressable>
   );
 }

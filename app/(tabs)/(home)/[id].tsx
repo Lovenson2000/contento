@@ -32,14 +32,14 @@ export default function ContentDetailPage() {
 
   if (!content) {
     return (
-      <View className="p-4">
+      <View className="p-4 dark:bg-zinc-950">
         <Text>Loading content...</Text>
       </View>
     );
   }
 
   return (
-    <View className="flex-1 bg-white p-4">
+    <View className="flex-1 dark:bg-zinc-950 bg-white p-4">
       {content?.source?.toLocaleLowerCase() === "youtube" && (
         <YoutubeScreen content={content} />
       )}

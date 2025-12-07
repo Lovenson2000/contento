@@ -1,3 +1,4 @@
+import { useTheme } from "@/lib/context/ThemeContext";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 const ContentImage = require("@/assets/images/content.jpg");
@@ -8,10 +9,19 @@ interface NoContentScreenProps {
 export default function NoContentScreen({
   onAddContentPress,
 }: NoContentScreenProps) {
+  const theme = useTheme();
+  const isDarkTheme = theme === "dark";
+
   return (
     <View className="h-3/4 justify-center items-center px-">
-      <Image source={ContentImage} className="w-60 h-60" resizeMode="contain" />
-      <Text className="text-lg font-medium text-center text-gray-800 my-4 px-6">
+      {!isDarkTheme && (
+        <Image
+          source={ContentImage}
+          className="w-60 h-60"
+          resizeMode="contain"
+        />
+      )}
+      <Text className="dark:text-slate-50 text-lg font-medium text-center text-gray-800 my-4 px-6">
         Start saving content you love by just adding a URL
       </Text>
 

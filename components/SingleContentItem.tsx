@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import * as Haptics from "expo-haptics";
-import { socialMediaIcons } from "@/lib/constants/social-icons";
+import { getSocialIcon } from "@/lib/constants/social-icons";
 import { Content } from "@/lib/types";
 import { capitalizeFirstLetter, truncateText } from "@/lib/utils/content";
 import { formatRemindTime } from "@/lib/utils/time";
@@ -19,6 +19,7 @@ import SingleContentMenuModal from "./SingleContentMenuModal";
 import CrossPlatformDateTimePicker from "./DateTimePicker";
 import { useContent } from "@/lib/api/hooks/useContent";
 import AddNewContentModal from "./AddContentModal";
+import { useTheme } from "@/lib/context/ThemeContext";
 
 type SingleContentItemProps = {
   content: Content;
@@ -31,6 +32,9 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
   const cardRef = useRef<View>(null);
   const [menuY, setMenuY] = useState(0);
 
+  const theme = useTheme();
+  const isDarkTheme = theme === "dark";
+
   const {
     deleteContentMutation,
     markContentAsFavorite,
@@ -41,8 +45,9 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
 
   const router = useRouter();
 
-  const iconSource =
-    socialMediaIcons[content.source?.toLocaleLowerCase() as string];
+  const sourceKey = content.source?.toLowerCase();
+
+  const iconSource = getSocialIcon(sourceKey, isDarkTheme);
 
   const handleMenuPress = () => {
     cardRef.current?.measureInWindow((x, y, width, height) => {
@@ -119,7 +124,7 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
     <>
       <TouchableOpacity
         ref={cardRef}
-        className="flex-row items-center border border-slate-100 p-4 rounded-md mb-6 w-full"
+        className="flex-row dark:bg-black items-center border dark:border-zinc-900 border-slate-100 p-4 rounded-md mb-6 w-full"
         onPress={() => router.push(`/${content.id}`)}
         onLongPress={handleMenuPress}
       >
@@ -130,7 +135,7 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
           <MaterialCommunityIcons
             name="dots-vertical"
             size={20}
-            color="#0f172a"
+            color={`${isDarkTheme ? "white" : "#0f172a"}`}
           />
         </Pressable>
 
@@ -142,8 +147,10 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
             />
           )}
           <View className="flex flex-col">
-            <Text className="text-xl">{truncateText(content.title, 30)}</Text>
-            <Text className="text-sm text-gray-500">
+            <Text className="text-xl dark:text-slate-100">
+              {truncateText(content.title, 30)}
+            </Text>
+            <Text className="text-sm dark:text-slate-100 text-gray-500">
               {capitalizeFirstLetter(content.source!)}
             </Text>
           </View>
@@ -158,15 +165,15 @@ export default function SingleContentItem({ content }: SingleContentItemProps) {
               <Ionicons
                 name="notifications-outline"
                 size={16}
-                color="#334155"
+                color={`${isDarkTheme ? "white" : "##334155"}`}
               />
-              <Text className="text-sm text-slate-700">
+              <Text className="text-sm dark:text-slate-100 text-slate-700">
                 {formatRemindTime(new Date(content.remindAt))}
               </Text>
             </Pressable>
           ) : (
             <Pressable onPress={handleAddReminder}>
-              <Text className="text-sm text-slate-900 bg-gray-100 px-2 py-1 rounded-lg">
+              <Text className="text-sm dark:text-slate-100 text-slate-900 dark:bg-slate-700 bg-gray-100 px-2 py-1 rounded-lg">
                 Add Reminder
               </Text>
             </Pressable>

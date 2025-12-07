@@ -1,11 +1,15 @@
-import { Platform, Image, Text, Pressable } from "react-native";
+import { Platform, Text, Pressable } from "react-native";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "expo-router";
-const AppleIcon = require("@/assets/images/apple.png");
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { useTheme } from "@/lib/context/ThemeContext";
 
 export default function AppleAuth() {
   const router = useRouter();
+  const theme = useTheme();
+  const isDarkTheme = theme === "dark";
+
   if (Platform.OS !== "ios") return null;
 
   const handleAppleSignIn = async () => {
@@ -59,10 +63,16 @@ export default function AppleAuth() {
   return (
     <Pressable
       onPress={handleAppleSignIn}
-      className="flex-row items-center border border-slate-200 justify-center bg-white py-3 px-5 rounded-lg gap-2"
+      className="flex-row items-center border dark:border-slate-700 border-slate-200 justify-center dark:bg-slate-900 bg-white py-4 px-5 rounded-lg gap-0.5"
     >
-      <Image source={AppleIcon} className="w-[30px] h-[30px]" />
-      <Text className="text-[#051542] text-xl ml-2">Continue with Apple</Text>
+      <FontAwesome
+        name="apple"
+        size={24}
+        color={`${isDarkTheme ? "white" : "#374151"}`}
+      />
+      <Text className="dark:text-slate-50 text-[#051542] text-xl ml-2">
+        Continue with Apple
+      </Text>
     </Pressable>
   );
 }

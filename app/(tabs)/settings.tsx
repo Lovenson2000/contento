@@ -58,7 +58,7 @@ export default function SettingsScreen() {
 
   return (
     <>
-      <ScrollView className="flex-1 bg-white">
+      <ScrollView className="flex-1 dark:bg-zinc-950 bg-white">
         <View className="p-4 w-full">
           <SectionHeader title="Account Settings" />
           <SettingsOption

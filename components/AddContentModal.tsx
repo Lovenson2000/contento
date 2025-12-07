@@ -15,6 +15,7 @@ import { useAuth } from "@/context/AuthContext";
 import { getContentSource } from "@/lib/utils/content";
 import CrossPlatformDateTimePicker from "./DateTimePicker";
 import { useContent } from "@/lib/api/hooks/useContent";
+import { useTheme } from "@/lib/context/ThemeContext";
 
 type AddNewContentModalProps = {
   isVisible: boolean;
@@ -49,6 +50,9 @@ export default function AddNewContentModal({
   const { createContentMutation, updateContentMutation } = useContent();
 
   const isEditMode = !!initialData?.id;
+
+  const theme = useTheme();
+  const isDarkTheme = theme === "dark";
 
   const _keyboardDidShow = useCallback(
     (e: KeyboardEvent) => {
@@ -162,10 +166,10 @@ export default function AddNewContentModal({
                 outputRange: ["0%", "100%"],
               }),
             }}
-            className="w-full bg-white p-4 rounded-t-2xl"
+            className="w-full dark:bg-slate-800 bg-white p-4 rounded-t-2xl"
           >
             <ScrollView className="flex-1">
-              <View className="w-full bg-white p-4 rounded-t-2xl">
+              <View className="w-full dark:bg-slate-800 bg-white p-4 rounded-t-2xl">
                 <View className="rounded-t-xl text-center relative">
                   <Pressable
                     onPress={onClose}
@@ -173,16 +177,16 @@ export default function AddNewContentModal({
                   >
                     <MaterialCommunityIcons
                       name="close"
-                      color="#051542"
+                      color={`${isDarkTheme ? "white" : "#051542 "}`}
                       size={24}
                     />
                   </Pressable>
-                  <Text className="text-center text-2xl my-8">
+                  <Text className="text-center dark:text-slate-50 text-2xl my-8">
                     {isEditMode ? "Edit Content" : "Add New Content"}
                   </Text>
                 </View>
                 <View className="mt-6">
-                  <Text className="text-[##051542] text-xl font-medium mb-1">
+                  <Text className="dark:text-slate-50 text-[##051542] text-xl font-medium mb-1">
                     URL
                   </Text>
                   <TextInput
@@ -190,12 +194,12 @@ export default function AddNewContentModal({
                     value={url}
                     placeholder="e.g https://www.contento.dev/"
                     placeholderTextColor="#535c73"
-                    className="border border-slate-200 bg-white rounded-lg p-4 text-slate-900"
+                    className="border border-slate-200 dark:bg-slate-900 dark:border-slate-700 bg-white rounded-lg p-4 text-slate-900"
                   />
                 </View>
 
                 <View className="mt-4">
-                  <Text className="text-[#051542] text-xl font-medium mb-1">
+                  <Text className="dark:text-slate-50 text-[#051542] text-xl font-medium mb-1">
                     Title (optional)
                   </Text>
                   <TextInput
@@ -203,12 +207,12 @@ export default function AddNewContentModal({
                     value={title}
                     placeholder="e.g How I learned English"
                     placeholderTextColor="#535c73"
-                    className="border border-slate-200 bg-white rounded-lg p-4 text-slate-900"
+                    className="border border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-700 rounded-lg p-4 dark:text-slate-50 text-slate-900"
                   />
                 </View>
 
                 <View className="mt-4">
-                  <Text className="text-[##051542] text-xl font-medium mb-1">
+                  <Text className="dark:text-slate-50 text-[##051542] text-xl font-medium mb-1">
                     Tags (optional)
                   </Text>
                   <TextInput
@@ -216,13 +220,13 @@ export default function AddNewContentModal({
                     value={tags}
                     placeholder="e.g education, news, science"
                     placeholderTextColor="#535c73"
-                    className="border border-slate-200 bg-white rounded-lg p-4 text-slate-900"
+                    className="border border-slate-200 dark:bg-slate-900 dark:border-slate-700 bg-white rounded-lg p-4 text-slate-900"
                   />
 
                   {/* Existing Tags Display */}
                   {existingTags.length > 0 && (
                     <View className="mt-3">
-                      <Text className="text-sm text-gray-600 mb-2">
+                      <Text className="text-sm dark:text-slate-50 text-gray-600 mb-2">
                         Current Tags:
                       </Text>
                       <View className="flex-row flex-wrap gap-2">
@@ -249,7 +253,7 @@ export default function AddNewContentModal({
                 {/* Reminder */}
                 <View className="mt-6">
                   <Pressable onPress={() => setShowPicker(true)}>
-                    <Text className="text-[#364aca] font-medium">
+                    <Text className="dark:text-slate-50 text-[#364aca] font-medium">
                       {reminderDate
                         ? `Reminder: ${reminderDate.toLocaleString()}`
                         : "Add Reminder"}
@@ -266,9 +270,11 @@ export default function AddNewContentModal({
                 <View className="flex-row gap-x-4 mt-6 mb-4">
                   <Pressable
                     onPress={onClose}
-                    className="flex-1 px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 items-center"
+                    className="flex-1 px-4 py-3 border dark:bg-slate-700 dark:border-transparent border-gray-300 rounded-lg bg-gray-100 items-center"
                   >
-                    <Text className="text-gray-700 font-medium">Cancel</Text>
+                    <Text className="text-gray-700 dark:text-slate-50 font-medium">
+                      Cancel
+                    </Text>
                   </Pressable>
                   <Pressable
                     className="flex-1 px-4 py-3 bg-[#364aca] rounded-lg items-center"

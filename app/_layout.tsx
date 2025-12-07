@@ -10,6 +10,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/config/react-query-provider";
 import { OnboardingProvider, useOnboarding } from "@/context/OnboardingContext";
 import LoadingScreen from "@/components/screens/LoadingScreen";
+import { ThemeProvider } from "@/lib/context/ThemeContext";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -64,20 +65,22 @@ export default function RootLayout() {
   }, [router]);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <OnboardingProvider>
-          <ShareIntentProvider
-            options={{
-              resetOnBackground: true,
-              onResetShareIntent: () => router.replace("/"),
-            }}
-          >
-            <RootNavigator />
-            <StatusBar style="light" />
-          </ShareIntentProvider>
-        </OnboardingProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <OnboardingProvider>
+            <ShareIntentProvider
+              options={{
+                resetOnBackground: true,
+                onResetShareIntent: () => router.replace("/"),
+              }}
+            >
+              <RootNavigator />
+              <StatusBar style="light" />
+            </ShareIntentProvider>
+          </OnboardingProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }

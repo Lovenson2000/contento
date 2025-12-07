@@ -15,7 +15,10 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { useEffect, useMemo, useRef, useState } from "react";
 import SingleContentItem from "@/components/SingleContentItem";
 import ContentsFilters from "@/components/ContentFilters";
-import { socialMediaIcons } from "@/lib/constants/social-icons";
+import {
+  getSocialIcon,
+  socialSources,
+} from "@/lib/constants/social-icons";
 import TagsFilter from "@/components/TagsFilter";
 import { useAuth } from "@/context/AuthContext";
 import AddNewContentModal from "@/components/AddContentModal";
@@ -26,6 +29,8 @@ import { useRouter } from "expo-router";
 import { useShareIntentContext } from "expo-share-intent";
 import { usePushNotifications } from "@/lib/hooks/usePushNotifications";
 import { useContent } from "@/lib/api/hooks/useContent";
+import { useTheme } from "@/lib/context/ThemeContext";
+import { capitalizeFirstLetter } from "@/lib/utils/content";
 export default function Index() {
   const [sourceModalVisible, setSourceModalVisible] = useState(false);
   const [showTags, setShowTags] = useState(false);
@@ -35,6 +40,9 @@ export default function Index() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddContentModalVisible, setIsAddContentModalVisible] =
     useState(false);
+
+  const theme = useTheme();
+  const isDarkTheme = theme === "dark";
 
   const { schedulePushNotification, cancelNotificationsByContentIds } =
     usePushNotifications();
@@ -161,14 +169,20 @@ export default function Index() {
   }
 
   return (
-    <View className="bg-white flex-1 p-4">
+    <View className="bg-white dark:bg-zinc-950 flex-1 p-4">
       <View className="flex-row items-center justify-between mt-2 mb-6">
-        <Text className="text-4xl font-semibold text-slate-800">My Saves</Text>
+        <Text className="text-4xl font-semibold dark:text-slate-100 text-slate-800">
+          My Saves
+        </Text>
         <Pressable
           onPress={() => setIsAddContentModalVisible(true)}
           disabled={!user}
         >
-          <Entypo name="plus" size={40} color="#051542" />
+          <Entypo
+            name="plus"
+            size={40}
+            color={`${isDarkTheme ? "white" : "#051542"}`}
+          />
         </Pressable>
       </View>
       <AddNewContentModal
@@ -176,13 +190,13 @@ export default function Index() {
         onClose={handleAddContentModalClose}
         onContentAdded={refetch}
       />
-      <View className="flex-row items-center border rounded-lg bg-gray-50 border-slate-100 px-2 py-0.5 mb-4">
+      <View className="flex-row items-center dark:border-none border rounded-lg dark:bg-gray-900 bg-gray-50 dark:border-gray-800 border-slate-100 px-2 py-0.5 mb-4">
         <Ionicons name="search" size={20} color="#64748b" className="mr-2" />
         <TextInput
           placeholder="Search"
           value={searchQuery}
           onChangeText={setSearchQuery}
-          className="flex-1 py-2 placeholder:text-slate-500"
+          className="flex-1 py-2 dark:placeholder:text-slate-500 placeholder:text-slate-500"
         />
       </View>
 
@@ -226,20 +240,24 @@ export default function Index() {
           onRequestClose={() => setSourceModalVisible(false)}
         >
           <View className="flex-1 justify-center items-center bg-black/50">
-            <View className="bg-white rounded-xl w-4/5 p-4">
-              <Text className="text-xl mb-4">Select a Source</Text>
+            <View className="bg-white dark:bg-gray-700 rounded-xl w-4/5 p-4">
+              <Text className="text-xl mb-4 dark:text-slate-100">
+                Select a Source
+              </Text>
               <ScrollView>
-                {Object.keys(socialMediaIcons).map((source) => (
+                {socialSources.map((source) => (
                   <Pressable
                     key={source}
-                    className="p-2 border-b border-slate-100 flex-row items-center gap-2"
+                    className="p-2 border-b dark:border-zinc-400 border-slate-100 flex-row items-center gap-2"
                     onPress={() => handleSourceSelect(source)}
                   >
                     <Image
-                      source={socialMediaIcons[source]}
+                      source={getSocialIcon(source, isDarkTheme)!}
                       style={{ width: 20, height: 20 }}
                     />
-                    <Text>{source}</Text>
+                    <Text className="dark:text-slate-100">
+                      {capitalizeFirstLetter(source)}
+                    </Text>
                   </Pressable>
                 ))}
               </ScrollView>

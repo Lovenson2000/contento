@@ -1,19 +1,22 @@
 import { Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { useTheme } from "@/lib/context/ThemeContext";
 
 export default function TabLayout() {
+  const theme = useTheme();
+  const isDarkTheme = theme === "dark";
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "#051542",
+        tabBarActiveTintColor: `${isDarkTheme ? "white" : "#051542"}`,
         headerStyle: {
           backgroundColor: "#fff",
         },
         headerShadowVisible: false,
         headerTintColor: "#fff",
         tabBarStyle: {
-          backgroundColor: "#fff",
+          backgroundColor: `${isDarkTheme ? "black" : "white"}`,
         },
       }}
     >
@@ -25,8 +28,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               name={focused ? "home-sharp" : "home-outline"}
-              color={color}
               size={24}
+              color={`${isDarkTheme ? "white" : color}`}
             />
           ),
         }}
@@ -40,7 +43,7 @@ export default function TabLayout() {
             <MaterialCommunityIcons
               name={focused ? "bookmark-check" : "bookmark-check-outline"}
               size={24}
-              color={color}
+              color={`${isDarkTheme ? "white" : color}`}
             />
           ),
         }}

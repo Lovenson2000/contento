@@ -38,7 +38,7 @@ export default function SignupScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white items-center justify-center">
+    <SafeAreaView className="flex-1 dark:bg-zinc-950 bg-white items-center justify-center">
       <LogoSection />
       <View className="px-8 w-full">
         <Input
@@ -46,6 +46,8 @@ export default function SignupScreen() {
           onChangeText={setEmail}
           value={email}
           placeholder="email@address.com"
+          labelClassName="dark:text-slate-100 text-slate-900"
+          inputClassName="border border-slate-200 dark:bg-slate-900 dark:border-slate-700 bg-white rounded-lg p-4 dark:text-slate-200 text-slate-900"
         />
 
         <Input
@@ -54,6 +56,8 @@ export default function SignupScreen() {
           value={password}
           placeholder="Password"
           secureTextEntry
+          labelClassName="dark:text-slate-100 text-slate-900"
+          inputClassName="border border-slate-200 dark:bg-slate-900 dark:border-slate-700 bg-white rounded-lg p-4 dark:text-slate-200 text-slate-900"
         />
         <Button title="Sign Up" onPress={signUpWithEmail} disabled={loading} />
 
@@ -68,7 +72,9 @@ export default function SignupScreen() {
           <SignInWithGoogle />
         </View>
         <View className="flex-row justify-center mt-8">
-          <Text className="text-gray-500">Already have an account?</Text>
+          <Text className="dark:text-slate-200 text-gray-500">
+            Already have an account?
+          </Text>
           <TouchableOpacity onPress={() => router.push("/login")}>
             <Text className="text-indigo-600 font-medium"> Sign In</Text>
           </TouchableOpacity>

@@ -12,6 +12,7 @@ import SingleMenuItem from "./SingleMenuItem";
 import { Content } from "@/lib/types";
 import * as WebBrowser from "expo-web-browser";
 import { capitalizeFirstLetter, normalizeUrl } from "@/lib/utils/content";
+import { useTheme } from "@/lib/context/ThemeContext";
 
 type Props = {
   visible: boolean;
@@ -39,13 +40,16 @@ export default function SingleContentMenuModal({
   content,
 }: Props) {
   const SCREEN_HEIGHT = Dimensions.get("window").height;
-  const MODAL_HEIGHT = 230; // approximate height of menu
+  const MODAL_HEIGHT = 230;
   const PADDING = 20;
 
   const top =
     menuY + MODAL_HEIGHT + PADDING > SCREEN_HEIGHT
       ? SCREEN_HEIGHT - MODAL_HEIGHT - PADDING
       : menuY;
+
+  const theme = useTheme();
+  const isDarkTheme = theme === "dark";
   const handleOpenLink = async () => {
     const url = normalizeUrl(content.url);
 
@@ -89,7 +93,7 @@ export default function SingleContentMenuModal({
     >
       <Pressable className="flex-1" onPress={onClose}>
         <View
-          className="absolute w-60 bg-white rounded-lg py-1 z-50"
+          className="absolute w-60 dark:bg-slate-700 bg-white rounded-lg py-1 z-50"
           style={{
             top: top + 40,
             right: 15,
@@ -109,7 +113,13 @@ export default function SingleContentMenuModal({
             onPress={() => {
               handleOpenLink();
             }}
-            icon={<Entypo name="link" size={18} color="#334155" />}
+            icon={
+              <Entypo
+                name="link"
+                size={18}
+                color={`${isDarkTheme ? "white" : "#334155"}`}
+              />
+            }
           />
 
           <SingleMenuItem
@@ -118,7 +128,13 @@ export default function SingleContentMenuModal({
               onEdit();
               onClose();
             }}
-            icon={<Feather name="edit-2" size={18} color="#334155" />}
+            icon={
+              <Feather
+                name="edit-2"
+                size={18}
+                color={`${isDarkTheme ? "white" : "#334155"}`}
+              />
+            }
           />
 
           <SingleMenuItem
@@ -126,9 +142,17 @@ export default function SingleContentMenuModal({
             onPress={handleFavoriteToggle}
             icon={
               isFavorite ? (
-                <AntDesign name="star" size={18} color="#334155" />
+                <AntDesign
+                  name="star"
+                  size={18}
+                  color={`${isDarkTheme ? "white" : "#334155"}`}
+                />
               ) : (
-                <AntDesign name="staro" size={18} color="#334155" />
+                <AntDesign
+                  name="staro"
+                  size={18}
+                  color={`${isDarkTheme ? "white" : "#334155"}`}
+                />
               )
             }
           />
@@ -141,7 +165,11 @@ export default function SingleContentMenuModal({
                 onClose();
               }}
               icon={
-                <MaterialIcons name="alarm-off" size={18} color="#334155" />
+                <MaterialIcons
+                  name="alarm-off"
+                  size={18}
+                  color={`${isDarkTheme ? "white" : "#334155"}`}
+                />
               }
             />
           )}

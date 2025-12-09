@@ -24,7 +24,7 @@ export default function Header() {
           isHomePage || isSettingsPage
             ? "items-center"
             : "flex-row items-center justify-between"
-        } px-4 border-b dark:border-zinc-700 border-slate-200`}
+        } px-4 border-b dark:border-zinc-900 border-slate-200`}
       >
         {isHomePage || isSettingsPage ? (
           <Text className="text-2xl text-center font-medium center dark:text-slate-100 text-slate-900">

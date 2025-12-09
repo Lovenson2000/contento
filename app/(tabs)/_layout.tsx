@@ -17,6 +17,7 @@ export default function TabLayout() {
         headerTintColor: "#fff",
         tabBarStyle: {
           backgroundColor: `${isDarkTheme ? "black" : "white"}`,
+          borderTopColor: `${isDarkTheme ? "#262e3d" : "#e2e8f0"}`,
         },
       }}
     >

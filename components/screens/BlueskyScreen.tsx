@@ -15,7 +15,7 @@ export default function BlueSkyScreen({ content }: { content: Content }) {
         style={{ borderRadius: 10 }}
       />
       <View className="mt-4">
-        <Text className="text-xl font-semibold">
+        <Text className="text-xl dark:text-slate-50 font-semibold">
           {content.title ?? "Bluesky Post"}
         </Text>
       </View>

@@ -15,10 +15,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { useEffect, useMemo, useRef, useState } from "react";
 import SingleContentItem from "@/components/SingleContentItem";
 import ContentsFilters from "@/components/ContentFilters";
-import {
-  getSocialIcon,
-  socialSources,
-} from "@/lib/constants/social-icons";
+import { getSocialIcon, socialSources } from "@/lib/constants/social-icons";
 import TagsFilter from "@/components/TagsFilter";
 import { useAuth } from "@/context/AuthContext";
 import AddNewContentModal from "@/components/AddContentModal";
@@ -196,7 +193,8 @@ export default function Index() {
           placeholder="Search"
           value={searchQuery}
           onChangeText={setSearchQuery}
-          className="flex-1 py-2 dark:placeholder:text-slate-500 placeholder:text-slate-500"
+          className="flex-1 py-2 dark:text-slate-100 text-slate-800"
+          placeholderTextColor={isDarkTheme ? "#94a3b8" : "#64748b"}
         />
       </View>
 

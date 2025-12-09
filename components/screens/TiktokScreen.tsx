@@ -16,7 +16,7 @@ export default function TiktokScreen({ content }: { content: Content }) {
         mediaPlaybackRequiresUserAction={false}
       />
       <View className="mt-4">
-        <Text className="text-xl font-semibold">
+        <Text className="text-xl dark:text-slate-50 font-semibold">
           {content.title ?? "TikTok Video"}
         </Text>
       </View>

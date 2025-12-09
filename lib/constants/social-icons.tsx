@@ -22,7 +22,10 @@ const socialIconMap: Record<string, SocialIcon> = {
   },
   quora: { light: require("@/assets/images/quora.png") },
   bluesky: { light: require("@/assets/images/bluesky.png") },
-  threads: { light: require("@/assets/images/threads.png") },
+  threads: {
+    light: require("@/assets/images/threads.png"),
+    dark: require("@/assets/images/threads_white.png"),
+  },
   pinterest: { light: require("@/assets/images/pinterest.png") },
 };
 

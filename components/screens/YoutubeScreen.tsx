@@ -66,7 +66,7 @@ export default function YoutubeScreen({ content }: { content: Content }) {
         }}
       />
       <View className="mt-4 mb-4">
-        <Text className="text-xl font-semibold">
+        <Text className="text-xl dark:text-slate-50 font-semibold">
           {videoData.snippet?.title ?? "Untitled"}
         </Text>
       </View>
